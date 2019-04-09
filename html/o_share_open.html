@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>开锁</title>
+
+</head>
+
+<body>
+    <div id="shareOpen">
+        <div class="top">
+            <img src="../img/icon_3.png" alt="">
+            <div class="flex flexBetween wd-90 mg-auto pd-b-25">
+                <div>编号</div>
+                <div class="macno">1549684351</div>
+            </div>
+        </div>
+        <div class="open ta-center pd-t-40">
+            <img src="../img/o_backBtn.png" class="wd-35">
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    getToken();
+
+    var openBoxMsg = JSON.parse(getItem("lingquBox"));
+
+    $(".macno").text(getParam().macno)
+
+    $(".open").click(function () {
+        var param = {
+            HTTP_API: "vv/cupboard/api/Cupboardgift/pushGoodsToBox",
+            cupboardid: openBoxMsg.cupboard_id,
+            box_id: openBoxMsg.box_id,
+            token: getItem("token")
+        }
+        ajaxPost(param, "", function (res) {
+            // alert(JSON.stringify(res))
+            layer_msg(res.msg);
+            if (res.code == 1) {
+                setTimeout(() => {
+                    goTo("o_share_list.html", "macno=" + getParam().macno);
+                }, 1500);
+            }
+        });
+
+    });
+</script>

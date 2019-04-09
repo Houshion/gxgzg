@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>资金明细</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body style="display:none">
+    <div class="list-wrap">
+        <ul class="list p12">
+        </ul>
+    </div>
+    <div class="w100 plr12 mt60 empty-pane" style="display:none">
+        <div class="flex-dcc pt60">
+            <img src="../img/icon_38.png" class="empty-icon">
+            <span class="f14 c9 mt4">暂无资金明细</span>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    // 获取token
+    getToken()
+</script>
+<script>
+    var page = 0,
+        pagesize = 10,
+        str = ''
+    $('.list-wrap').dropload({
+        scrollArea: window,
+        loadDownFn: function (me) {
+            $('.dropload-down').remove()
+            page++
+            ajaxPost({
+                HTTP_API: 'vv/money/api/index/getUserCapitalrecord',
+                token: getItem("token"),
+                page: page,
+                pagesize: pagesize
+            }, "", function (res) {
+                console.log('交易明细', res)
+                if (res.code == 1) {
+                    if (page == 1 && res.data.length == 0) {
+                        $('.empty-pane').show()
+                    }
+                    if (res.data.length >= 1) {
+                        res.data.forEach(function (p1) {
+                            str += '<li class="bg-ff br5 plr12 ptb15 flex-csb mb12">' +
+                                '<div class="flex-dc fg1">' +
+                                '<span class="f15 c3">' + p1.operate_name + '</span>' +
+                                '<span class="f13 c9 mt4">' + format(p1.ctime * 1000,
+                                    'Y-m-d H:i') + '</span>' +
+                                '</div>' +
+                                '<span class="f15 c0">' + p1.fuhao + '￥' + p1.money +
+                                '</span>' +
+                                '</li>'
+                        })
+                        $('.list').append(str)
+                    } else {
+                        me.lock()
+                        me.noData()
+                    }
+                    me.resetload()
+                }
+            })
+        }
+    })
+</script>

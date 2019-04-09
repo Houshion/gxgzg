@@ -1,0 +1,264 @@
+/*通用样式*/
+
+.c-diy {
+    color: #99c9d3;
+}
+
+.ac-diy {
+    color: #99c9d3!important;
+}
+
+.b-diy {
+    border: 1px solid #99c9d3;
+}
+
+.bt-diy {
+    border-top: 1px solid #99c9d3;
+}
+
+.bb-diy {
+    border-bottom: 1px solid #99c9d3;
+}
+
+.bl-diy {
+    border-left: 1px solid #99c9d3;
+}
+
+.br-diy {
+    border-right: 1px solid #99c9d3;
+}
+
+.bg-diy {
+    background-color: #99c9d3;
+}
+
+.c-diy2 {
+    color: #ff3600;
+}
+
+.bg-diy2 {
+    background-color: #ff3600;
+}
+
+.bg-diy3 {
+    background-color: #ffba00;
+}
+
+.mask {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, .2);
+    z-index: 99;
+}
+
+.modal {
+    position: fixed;
+    width: 80%;
+    left: 10%;
+    z-index: 100;
+}
+
+.circle {
+    width: 0.22rem;
+    height: 0.22rem;
+    line-height: 0.22rem;
+}
+
+.circle2 {
+    width: 0.17rem;
+    height: 0.17rem;
+    line-height: 0.17rem;
+    position: absolute;
+    right: -0.02rem;
+    top: 0.06rem;
+    z-index: 3;
+}
+
+.circle>img {
+    width: 0.14rem;
+}
+
+input:checked+.circle {
+    background-color: #99c9d3;
+}
+
+.paytype-icon {
+    width: 0.23rem;
+}
+
+.arrow-icon {
+    height: 0.12rem;
+    width: auto;
+}
+
+.upload-icon {
+    width: 0.60rem;
+    height: 0.60rem;
+}
+
+.arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 0.05rem solid transparent;
+    border-right: 0.05rem solid transparent;
+    border-top: 0.1rem solid #bbb;
+}
+
+.empty-icon {
+    width: 1.8rem;
+}
+
+.good-pic {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+.order-pic {
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.order-menu.active {
+    background-color: #99c9d3;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(153, 201, 211, .8);
+}
+
+.avatar {
+    width: 0.50rem;
+    height: 0.50rem;
+}
+
+.center-avatar {
+    width: 0.70rem;
+    height: 0.70rem;
+}
+
+.charge-bar {
+    height: 0.8rem;
+}
+
+.charge-bar {
+    background-color: #f5f5f5;
+}
+
+.charge-bar>.charge-money {
+    color: #99c9d3;
+}
+
+.charge-type:checked+.charge-bar {
+    background-color: #99c9d3;
+}
+
+.charge-type:checked+.charge-bar>.charge-money {
+    color: #fff;
+}
+
+.coupon-bg {
+    background: url(../img/icon_2.png) center no-repeat;
+    background-size: cover;
+    height: 1.2rem;
+}
+
+.coupon-icon {
+    width: 0.40rem;
+    height: 0.40rem;
+}
+
+.wx-bar {
+    width: 0.55rem;
+    height: 0.55rem;
+}
+
+.logo-icon {
+    width: 0.7rem;
+}
+
+.success-icon {
+    width: 0.40rem;
+}
+
+.swiper-slide>img {
+    height: 1.60rem;
+}
+
+.swiper-pagination-bullet {
+    background-color: rgba(255, 255, 255, .8);
+}
+
+.swiper-pagination-bullet .swiper-pagination-bullet-active {
+    background-color: #fff;
+}
+
+.mui-switch {
+    width: 52px;
+    height: 31px;
+    position: relative;
+    border: 1px solid #dfdfdf;
+    background-color: #fdfdfd;
+    box-shadow: #dfdfdf 0 0 0 0 inset;
+    border-radius: 20px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    background-clip: content-box;
+    display: inline-block;
+    -webkit-appearance: none;
+    user-select: none;
+    outline: none;
+}
+
+.mui-switch:before {
+    content: '';
+    width: 29px;
+    height: 29px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 20px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.mui-switch:checked {
+    border-color: #64bd63;
+    box-shadow: #64bd63 0 0 0 16px inset;
+    background-color: #64bd63;
+}
+
+.mui-switch:checked:before {
+    left: 21px;
+}
+
+.del-btn {
+    position: absolute;
+    top: -0.05rem;
+    right: -0.05rem;
+}
+
+.del-btn>img {
+    width: 0.25rem;
+    height: 0.25rem;
+}
+
+.shopcar-icon {
+    width: 0.35rem;
+}
+
+.menu-icon {
+    width: 0.18rem;
+}
+
+.bg-pane {
+    background: url(../img/bg_1.png) top center no-repeat;
+    background-size: cover;
+    height: 1.5rem;
+}

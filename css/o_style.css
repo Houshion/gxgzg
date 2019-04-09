@@ -1,0 +1,310 @@
+/*********** 背景颜色 ***********/
+.b666 { background: #666666 }
+.bmain { background: #9dcdd7 }
+.bf5 { background: #f5f5f5 }
+.bfff { background: #ffffff }
+.bred { background: #ff0000 }
+
+/*********** 字体颜色 ***********/
+.cred { color: #ff0000 }
+.cmain { color: #9dcdd7 }
+.cfff { color: #ffffff }
+.c666 { color: #666666 }
+c000 { color: #000000 }
+
+/*********** 按钮样式 ***********/
+.mainBtn { 
+    background: #9dcdd7;
+    color: #ffffff;
+    border-radius: 5px;
+    text-align: center;
+}
+.rentBtn {
+    background: #f8bd08;
+    color: #ffffff;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/*********** 间距样式 ***********/
+
+.h100 { height: 100% }
+
+/*********** 遮 罩 层 ***********/
+.mask {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+.maskBox {
+    position: fixed;
+    margin: auto;
+    left: 0;
+    width: 100%;
+    bottom: 60px;
+    background: #ffffff;
+    z-index: 3
+}
+
+/*********** icon样式 ***********/
+
+/*********** o_buy_list ***********/
+
+#buyList .goodsFrom span {
+    color: #666;
+    background: #ddd;
+    padding: 2px 20px;
+    border-radius: 10px;
+}
+
+#buyList .goodsPrice .img img {
+    width: 30px;
+    height: 30px;
+}
+
+#buyList .listBox {
+    background: #ffffff;
+    padding-bottom: 10px;
+    margin-bottom: 60px;
+}
+
+#buyList .bottom {
+    height: 60px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 10
+}
+
+#buyList .bottom .badge {
+    background: #ff0000;
+    color: #ffffff;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    position: absolute;
+    left: 50px;
+}
+
+#buyList .bottom .imgCart {
+    width: 50px;
+}
+
+#buyList .maskBox .removeBtn {
+    padding: 2px 10px;
+    border: #dddddd 1px solid;
+    border-radius: 15px;
+}
+
+/*********** o_share_list ***********/
+
+#shareList .goodsFrom span {
+    color: #666;
+    background: #ddd;
+    padding: 2px 20px;
+    border-radius: 10px;
+}
+
+#shareList .goodsPrice .img img {
+    width: 30px;
+    height: 30px;
+}
+
+#shareList .listBox {
+    background: #ffffff;
+    padding-bottom: 10px;
+}
+
+#shareList .takeBtn {
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+/*********** o_share_open/o_rent_open ***********/
+
+#shareOpen .top,
+#rentOpen .top {
+    background: #ffffff;
+    text-align: center
+}
+
+#shareOpen .top im,
+#rentOpen .top img{
+    width: 40%;
+    padding: 5%;
+}
+
+#rentOpen .gridBox .grid {
+    padding: 5px 0;
+    width: 22%;
+    margin-right: 3%;
+    height: 30px;
+    background: #ffffff
+}
+
+#rentOpen .gridBox .grid:nth-child(4n){
+    margin-right: 0
+}
+
+#rentOpen .gridBox .grid.pick {
+    background: #9dcdd7;
+    border-color: #9dcdd7;
+    color: #ffffff
+}
+
+/*********** o_buy_order ***********/
+
+#buyOrder .goodsFrom span {
+    color: #666;
+    background: #ddd;
+    padding: 2px 20px;
+    border-radius: 10px;
+}
+
+#buyOrder .payWay .img img{
+    width: 30px;
+    height: 30px;
+}
+
+#buyOrder .payWay .checkImg img{
+    width: 20px;
+    height: 20px;
+}
+
+#buyOrder .line {
+    height: 1px;
+    width: 100%;
+    background: #efefef;
+    margin: 10px 0;
+}
+
+#buyOrder .bottom {
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+}
+
+/*********** o_coupon ***********/
+
+.coupon{
+    background: #9dcdd7;
+    background: radial-gradient(rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 5px, #9dcdd7 5px);
+    background-size: 15px 15px;
+    /* background-position: 9px 3px; */
+}
+
+.coupon:before{
+    background-color:#9dcdd7;
+}
+
+/*********** o_rent_detail/o_express ***********/
+#rentDetail .pickBox div,
+#expressDetail .pickBox div {
+    background: #9dcdd7;
+    border-radius: 5px;
+    padding: 3px 0;
+    width: 18%;
+    color: #ffffff;
+    margin-right: 2%;
+}
+
+#rentDetail .btn div {
+    width: 47%;
+    height: 40px;
+    font-size: 20px;
+}
+
+#expressDetail .btn div {
+    width: 100%;
+    height: 40px;
+    font-size: 20px;
+}
+
+#rentDetail .mainBox .up .row .column,
+#expressDetail .mainBox .up .row .column {
+    width: 8%;
+    margin-right: 1.2%;
+}
+
+#rentDetail .mainBox .up .row .grid,
+#expressDetail .mainBox .up .row .grid {
+    border-radius: 5px;
+    background: #ffffff;
+}
+
+#rentDetail .mainBox .up .row .pick,
+#expressDetail .mainBox .up .row .pick {
+    background: #9dcdd7;
+}
+
+#rentDetail .mainBox .up .row .ban,
+#expressDetail .mainBox .up .row .ban {
+    background: #ff0000;
+}
+
+#rentDetail .mainBox .down .showBox,
+#expressDetail .mainBox .down .showBox {
+    width: 16px;
+    height: 16px;
+    border: 1px #e1e1e1 solid;
+    border-radius: 5px
+}
+
+/*********** o_rent_order/o_express_order ***********/
+
+#rentOrder .openWay .img img{
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+#rentOrder .payWay .img img,
+#expressOrder .payWay .img img{
+    width: 30px;
+    height: 30px;
+}
+
+#rentOrder .payWay .checkImg img,
+#expressOrder .payWay .checkImg img{
+    width: 20px;
+    height: 20px;
+}
+
+#rentOrder .line,
+#expressOrder .line {
+    height: 1px;
+    width: 100%;
+    background: #e1e1e1;
+    margin: 10px 0;
+}
+
+#rentOrder .bottom,
+#expressOrder .bottom {
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+}
+
+#rentOrder input,
+#expressOrder input {
+    border: none;
+    width: 100%;
+}
+
+#rentOrder .h30,
+#expressOrder .h30 {
+    height: 30px;
+    line-height: 30px;
+}
+
+/*********** o_rent_pay/o_express_pay ***********/
+
+#rentPay .title .img,
+#expressPay .title .img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}

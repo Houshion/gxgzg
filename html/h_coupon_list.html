@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>优惠券</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body class="bg-ff" style="display:none">
+    <div class="list-wrap">
+        <ul class="list p12 flex-csb ac-sb r-wrap">
+        </ul>
+    </div>
+    <div class="w100 plr12 mt60 empty-pane" style="display:none">
+        <div class="flex-dcc pt60">
+            <img src="../img/icon_38.png" class="empty-icon">
+            <span class="f14 c9 mt4">暂无优惠券</span>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script>
+// 获取token
+getToken()
+</script>
+<script>
+var page = 0,
+    pagesize = 10,
+    str = ''
+$('.list-wrap').dropload({
+    scrollArea: window,
+    loadDownFn: function(me) {
+        $('.dropload-down').remove()
+        page++
+        request(
+            '', {
+                HTTP_API: 'vv/coupon/api/index/myCoupons',
+                // status:0,
+                page: page,
+                pagesize: pagesize
+            },
+            function(res) {
+                console.log('我的优惠券', res)
+                if (res.code == 1) {
+                    if (page == 1 && res.data.list.length == 0) {
+                        $('.empty-pane').show()
+                    }
+                    if (res.data.list.length >= 1) {
+                        res.data.list.forEach(function(p1) {
+                            str += '<li class="w50 plr2 pb8 coupon-bar" data-coupon_id="' + p1.couponid + '" data-coupon_price="' + p1.money + '">' +
+                                '<div class="w100 coupon-bg flex-dcc jc-center ptb20">' +
+                                '<div class="flex-csb w60">' +
+                                '<span class="cf f13">￥<span class="f30 fw-bold">' + parseInt(p1.money) + '</span></span>' +
+                                '<span class="b-ff br-circle f18 cf coupon-icon flex-center flex-none">券</span>' +
+                                '</div>' +
+                                '<p class="f14 cf mt20">有效期至：' + format(p1.useendtime * 1000, 'Y-m-d') + '</p>' +
+                                '</div>' +
+                                '</li>'
+                        })
+                        $('.list').append(str)
+                    } else {
+                        me.lock()
+                        me.noData()
+                    }
+                    me.resetload()
+                }
+            }
+        )
+    }
+})
+
+// $('.list-wrap').on('click', '.coupon-bar', function() {
+//     var coupon_id = $(this).data('coupon_id')
+//     var coupon_price = $(this).data('coupon_price')
+//     window.location.href = 'order.html?coupon_id=' + coupon_id + '&coupon_price=' + coupon_price + '&price=' + getUrlParam('price') + '&macno=' + getUrlParam('macno') + '&package_id=' + getUrlParam('package_id')
+// })
+</script>

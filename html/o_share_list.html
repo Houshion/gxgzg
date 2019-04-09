@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>详情</title>
+    <style>
+        .swiper-pagination-bullet {
+            background-color: rgba(255, 255, 255, .8);
+        }
+
+        .swiper-pagination-bullet .swiper-pagination-bullet-active {
+            background-color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="shareList">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <div class="listBox">
+            <!-- 商品列表 -->
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    getToken()
+
+    var loading = layer_load("加载中...") //加载中..
+
+    swiper()
+
+    getList()
+    //获取轮播图
+    function swiper() {
+        var str = ''
+        ajaxPost({
+            HTTP_API: 'vv/advert/api/index/getAdvertByKey',
+            keyname: 'goods_banner'
+        }, '', function (res) {
+            res.data.forEach(item => {
+                str += '<div class="swiper-slide">' +
+                    '<img src="' + item.value + '" class="wd-100" title="' + item.title +
+                    '" style="height:140px">' +
+                    '</div>'
+            })
+            $('.swiper-wrapper').html(str)
+            var mySwiper = new Swiper('.swiper-container', {
+                loop: true,
+                autoplay: true,
+                pagination: {
+                    el: '.swiper-pagination'
+                }
+            })
+        })
+    }
+
+    function getList() {
+        if (getParam().macno) {
+            setItem("macno", getParam().macno);
+        }
+        var str = '',
+            goods_list = []
+        ajaxPost({
+            HTTP_API: 'vv/cupboard/api/index/cupboardList',
+            macno: getItem("macno"),
+            // macno: '10003',
+            token: getItem('token')
+        }, '', function (res) {
+            if (res.code == 1) {
+                goods_list = res.data.list
+                console.log(goods_list);
+                if (goods_list.length >= 1) {
+                    goods_list.forEach(item => {
+                        if (item.goods_info.title) {
+                            str +=
+                                '<div class="list flex pd-l-10 pd-t-10">' +
+                                '<div class="img wd-30 mg-r-15">' +
+                                '<img src="' + item.goods_info.cover + '" class="wd-100">' +
+                                '</div>' +
+                                '<div class="msg wd-70 flex flexWrap jc-sb border-b">' +
+                                '<div class="goodsName wd-100">' + item.goods_info.title + '</div>' +
+                                '<div class="goodsFrom wd-100">' +
+                                '<span>' + getRowName(item.row) + item.col + '</span>' +
+                                '</div>' +
+                                '<div class="goodsPrice wd-100 flex flexBetween flexEnd pd-b-10">' +
+                                '<div class="pickBtn wd-100 pd-b-10 ta-right mg-r-20">' +
+                                '<span class="takeBtn mainBtn" onclick="takeGoods(' + item.id + ',' +
+                                item.cupboard_id + ')">立即领取</span>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>'
+                        }
+                    })
+                }
+                $('.listBox').prepend(str)
+                layer.close(loading)
+            }
+        })
+    }
+
+    var times = 1
+
+    function takeGoods(boxId, cupId) {
+
+        // if (times > 3) {
+        //     layer_message('您今日的共享已达上限，请明日再来')
+        //     return false
+        // }
+        layer_confirm('您是否确定领取该共享商品？', true, function (index) {
+            var status = isHadBox();
+
+            if (status == 1) {
+                ajaxPost({
+                    HTTP_API: "vv/cupboard/api/Cupboardgift/getGoodsFromBox",
+                    cupboardid: cupId,
+                    token: getItem("token"),
+                    box_id: boxId,
+                }, "", function (res) {
+                    layer.close(index);
+                    layer_msg(res.msg)
+                    if (res.code == 1) {
+                        setTimeout(() => {
+                            location.reload()
+                        }, 1500);
+                    } else {
+                        setTimeout(() => {
+                            // goTo("o_share_open.html", "macno=" + getParam().macno);
+                        }, 1500);
+                    }
+                })
+            } else if (status == 0) {
+                setTimeout(() => {
+                    goTo("o_share_open.html", "macno=" + getParam().macno);
+                }, 1500);
+            } else if (status == 2) {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }
+        })
+    }
+</script>

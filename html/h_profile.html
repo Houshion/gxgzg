@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>个人资料</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body style="display:none">
+    <label class="flex-csb bg-ff plr12 ptb15 mtb12">
+        <input type="file" id="file" accept="image/*" capture="camera" multiple hidden onchange="uploadFiles(this)">
+        <span class="f15 c3 flex-none">头像</span>
+        <div class="flex-cfe flex-none">
+            <img src="" alt="" class="avatar br-circle" id="avatar">
+            <img src="../img/icon_8.png" alt="" class="arrow-icon ml10">
+        </div>
+    </label>
+    <ul class="bg-ff mb12 plr12">
+        <li class="flex-csb ptb15 bb-e5" onclick="showModal('.modal1')">
+            <span class="f15 c3 flex-none">昵称</span>
+            <div class="flex-cfe flex-none">
+                <span class="f15 c6 fg1" id="nickname"></span>
+                <img src="../img/icon_8.png" alt="" class="arrow-icon ml10">
+            </div>
+        </li>
+        <li class="flex-csb ptb15" onclick="operateCard()">
+            <span class="f15 c3 flex-none">会员卡</span>
+            <div class="flex-cfe flex-none">
+                <span class="f15 c6 fg1" id="vip_num"></span>
+                <img src="../img/icon_8.png" alt="" class="arrow-icon ml10">
+            </div>
+        </li>
+    </ul>
+    <div class="mask" style="display:none" onclick="hideModal()"></div>
+    <form id="form1" class="modal modal1 bg-ff br8 p15" style="display:none;top:1.2rem">
+        <h2 class="w100 ta-center f16 c0 fw-bold">昵称</h2>
+        <div class="w100 bb-e5 ptb12">
+            <input type="text" name="nickname" placeholder="请输入昵称" tip-text="昵称" class="w100 c0 f15" required>
+        </div>
+        <input type="hidden" name="HTTP_API" value="vv/usercenter/api/user/edit">
+        <input type="hidden" name="token" class="token" value="">
+        <button type="button" class="w100 ta-center ptb12 f15 cf bg-diy br8 mt20 submit_btn" onclick="formSubmit('form1')">保存</button>
+    </form>
+    <form id="form2" class="modal modal2 bg-ff br8 p15" style="display:none;top:1.2rem">
+        <h2 class="w100 ta-center f16 c0 fw-bold mb15">会员卡</h2>
+        <div class="w100 bb-e5 ptb12">
+            <input type="tel" name="card_number" placeholder="请输入会员卡号" tip-text="会员卡号" class="w100 c0 f15" required>
+        </div>
+        <input type="hidden" name="HTTP_API" value="vv/usercard/api/index/addUserCard">
+        <input type="hidden" name="token" class="token" value="">
+        <button type="button" class="flex-center ta-center w100 bg-diy br8 f15 cf ptb12 mt20 submit_btn" onclick="formSubmit('form2')">绑定</button>
+    </form>
+    <form id="form3" class="modal modal3 bg-ff br8 p15" style="display:none;top:1.2rem">
+        <h2 class="w100 ta-center f16 c0 fw-bold mb15">会员卡</h2>
+        <p class="f13 c9">当前会员卡号：<span class="c3 primary_number"></span></p>
+        <div class="w100 bb-e5 ptb12">
+            <input type="tel" name="new_number" placeholder="请输入新的会员卡号" tip-text="会员卡号" class="w100 c0 f15" required>
+        </div>
+        <input type="hidden" name="HTTP_API" value="vv/usercard/api/index/updateUserCard">
+        <input type="hidden" name="token" class="token" value="">
+        <input type="hidden" name="primary_number" id="primary_number" value="">
+        <button type="button" class="flex-center ta-center w100 bg-diy br8 f15 cf ptb12 mt20 submit_btn" onclick="formSubmit('form3')">换绑</button>
+    </form>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script>
+// 获取token
+getToken()
+</script>
+<script>
+request(
+    '', {
+        HTTP_API: 'vv/usercenter/api/user/profile',
+        token: getStorage("token")
+    },
+    function(res) {
+        console.log('个人中心', res)
+        if (res.code == 1) {
+            $('#avatar').attr('src', res.data.userinfo.avatar)
+            $('#nickname').text(res.data.userinfo.nickname)
+        } else {
+            console.log(res.msg)
+        }
+    }
+)
+
+var has_card_number = 0
+request(
+    '', {
+        HTTP_API: 'vv/usercard/api/index/getmycard'
+    },
+    function(res) {
+        console.log('获取卡号', res)
+        if (res.code == 1) {
+            has_card_number = 1
+            $('#vip_num').text(res.data.card_number)
+            $('#primary_number').val(res.data.card_number)
+            $('.primary_number').text(res.data.card_number)
+        } else {
+            console.log(res.msg)
+        }
+    },
+    false
+)
+
+function uploadFiles(obj) {
+    var reader, result, formData, files, file
+    files = obj.files
+
+    if (isIos()) {
+        $('input:file').removeAttr("capture")
+    }
+
+    for (var j = 0; j < files.length; j++) {
+        file = files[j]
+        if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+            reader = new FileReader()
+            reader.addEventListener('load', function() {
+                result = this.result
+                formData = new FormData()
+                formData.append('HTTP_API', 'vv/usercenter/api/user/edit')
+                formData.append('token', getStorage('token'))
+                formData.append('avatar', file)
+                $.ajax({
+                    type: 'post',
+                    url: dlcUrl,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    dataType: 'JSON',
+                    success: function(res) {
+                        if (res.code == 1) {
+                            layer_msg('操作成功')
+                            $('#avatar').attr('src', result)
+                        } else {
+                            layer_msg(res.msg)
+                        }
+                    }
+                })
+            }, false)
+            reader.readAsDataURL(file)
+        }
+    }
+}
+
+function operateCard() {
+    if (has_card_number == 1) {
+        showModal('.modal3')
+    } else {
+        showModal('.modal2')
+    }
+}
+</script>

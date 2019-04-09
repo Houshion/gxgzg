@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>我的钱包</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body class="bg-ff" style="display:none">
+    <div class="w100 plr12">
+        <div class="flex-dc jc-sa plr15 br15-t-lr bg-pane">
+            <span class="f13 cf pt15">余额</span>
+            <div class="flex jc-sb ai-bs">
+                <span class="cf f13" style="margin-top:-0.06rem">￥<span class="f30" id="balance"></span></span>
+                <a href="h_charge.html" class="ptb2 plr20 f14 acf bg-diy3 br8 flex-none mt15">充值</a>
+            </div>
+        </div>
+    </div>
+    <ul>
+        <li>
+            <a href="o_coupon.html" class="flex-csb plr12 ptb15 bb-e5">
+                <div class="flex-cfs fg1">
+                    <span class="f15 c3 ml12 fg1">优惠券</span>
+                </div>
+                <img src="../img/icon_8.png" alt="" class="arrow-icon">
+            </a>
+        </li>
+        <li>
+            <a href="h_trade_list.html" class="flex-csb plr12 ptb15 bb-e5">
+                <div class="flex-cfs fg1">
+                    <span class="f15 c3 ml12 fg1">资金明细</span>
+                </div>
+                <img src="../img/icon_8.png" alt="" class="arrow-icon">
+            </a>
+        </li>
+    </ul>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script>
+// 获取token
+getToken()
+</script>
+<script>
+request(
+    '', {
+        HTTP_API: 'vv/usercenter/api/user/myWallet'
+    },
+    function(res) {
+        console.log('我的钱包', res)
+        if (res.code == 1) {
+            var balance = res.data.uMoney * 1 + res.data.umoneygift * 1
+            $('#balance').text(balance)
+        } else {
+            console.log(res.msg)
+        }
+    }
+)
+</script>

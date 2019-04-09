@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>开锁</title>
+
+</head>
+
+<body>
+    <div id="rentOpen">
+        <div class="top">
+            <img src="../img/icon_3.png" alt="">
+            <div class="flex flexBetween wd-90 mg-auto pd-b-25">
+                <div>编号</div>
+                <div class="cupboardNum">1549684351</div>
+            </div>
+        </div>
+        <div class="open ta-center pd-20">
+            <div class="ta-center">
+                <div>开锁柜号</div>
+                <div class="gridBox flex flexWrap">
+
+                </div>
+            </div>
+            <img src="../img/o_openBtn.png" class="wd-35 mg-t-20" onclick="openGrid()">
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    getToken()
+    init();
+    var col, row, oid;
+
+    $(".cupboardNum").text(getParam().macno)
+
+    function init() {
+        ajaxPost({
+            HTTP_API: "vv/cupboard/api/index/beusebox",
+            token: getItem("token"),
+            type: 1
+        }, "", function (res) {
+            var str = "";
+            for (var i = 0; i < res.data.length; i++) {
+                col = res.data[0].col;
+                row = res.data[0].row;
+                oid = res.data[0].orderGoodsInfo.oid;
+                if (res.data[i].cupboard_macno == getParam().macno) {
+                    str += '<div data-col="'+res.data[i].col+'" data-row="'+res.data[i].row+'" data-oid="'+res.data[i].orderGoodsInfo.oid+'" class="grid border radius5 box mg-t-10 ' + (i == 0 ? "pick" : "") +
+                        '">' + getRowName(res.data[i].row) + res.data[i].col + '</div>'
+                }
+            }
+            $(".gridBox").append(str)
+        })
+    }
+
+    $(".gridBox").on("click", ".grid", function () {
+        if (!$(this).hasClass("pick")) {
+            $(".grid").removeClass("pick")
+            $(this).addClass("pick")
+        }
+        col = $(this).data("col");
+        row = $(this).data("row");
+        oid = $(this).data("oid");
+    });
+
+    function openGrid() {
+        ajaxPost({
+            HTTP_API: "vv/cupboard/api/index/opendoor",
+            col: col,
+            row: row,
+            oid: oid,
+            macno: getParam().macno
+        }, "", function (res) {
+            if(res.code == 1){
+                layer_msg("开锁成功");
+            }else{
+                layer_msg(res.msg);
+            }
+        })
+    }
+</script>

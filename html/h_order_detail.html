@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>订单详情</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body>
+    <!-- <div class="bg-ff p12 flex-csb mb12">
+        <div class="flex-dc">
+            <span class="f14 c3">柜号：A05<span class="c-diy2 f12 ml8">￥<span class="f15">10/天</span></span>
+            </span>
+            <span class="f13 c9">地址：广东省东莞市高盛科技园</span>
+        </div>
+        <button type="button" class="c-diy b-diy br5 f14 ptb4 plr6 flex-none">售后保障</button>
+    </div>
+    <div class="w100 bg-ff mb12 flex-dc order-pane">
+        <div class="flex-csb ptb10 plr12">
+            <span class="f14 c9 fg1">订单编号：23523543332</span>
+            <span class="f14 c-diy flex-none">已完成</span>
+        </div>
+        <div class="flex-csb bg-f5 ptb10 plr12">
+            <img src="../img/pic_1.png" alt="" class="order-pic br5">
+            <div class="flex-dc jc-sb as-st ml10 of-hidden">
+                <div class="flex-dc ai-fs">
+                    <span class="c3 f14 text-hidden w100">蓝莓饮品WINZ 你的专属 你的品位你的品位你的品位...</span>
+                    <span class="ptb2 plr12 f13 c3 bg-cc br5 mt2 flex-none">A4</span>
+                </div>
+                <div class="flex-csb pb2">
+                    <span class="c-diy2 f12">￥<span class="f16">10.00</span></span>
+                </div>
+            </div>
+        </div>
+        <div class="flex-csb ptb10 plr12 f13 c9 bb-e5">
+            <span class="flex-none">共<span class="plr2">1</span>件商品</span>
+            <span class="flex-none">小计：<sapn class="f12 c-diy2">￥<span class="f15">20.00</span></sapn>
+            (优惠￥2.00)</span>
+        </div>
+        <div class="flex-csb ptb10 plr12 f13 c9">支付时间：2018-10-10 20:00</div>
+    </div> -->
+    <!-- <div class="flex-csb bg-ff p12 mb12">
+        <span class="f15 c9 fg1">订单编号：23523543332</span>
+        <span class="f15 c-diy flex-none">寄存中</span>
+    </div>
+    <div class="bg-ff flex-dc jc-sb p12">
+        <span class="f15 c0">柜号A10</span>
+        <div class="flex-dcc ptb10">
+            <span class="c9 f13">已消费</span>
+            <span class="f15 c3">￥<span class="f30">60</span></span>
+        </div>
+        <div class="flex-dc f14">
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">手机</span>
+                <span class="fg1 ta-right c3">13454546567</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">取货码</span>
+                <span class="fg1 ta-right c3">100652</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">储物时间</span>
+                <span class="fg1 ta-right c3">10天</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">已支付</span>
+                <span class="fg1 ta-right c3">￥100</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">存储时间</span>
+                <span class="fg1 ta-right c3">2017-10-10 10:00</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">结束时间</span>
+                <span class="fg1 ta-right c3">2017-10-10 10:00</span>
+            </div>
+            <div class="flex-csb">
+                <span class="flex-none c9">地址</span>
+                <span class="fg1 ta-right c3">广东省东莞市高盛科技园</span>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-fixed w100 bg-ff p12 flex-cfe">
+        <button type="button" class="c-diy b-diy br5 f14 ptb4 plr10 flex-none">立即支付</button>
+    </div>
+    <div class="flex-csb bg-ff p12 mb12">
+        <span class="f15 c9 fg1">订单编号：23523543332</span>
+        <span class="f15 c-diy flex-none">进行中</span>
+    </div>
+    <div class="bg-ff flex-dc jc-sb p12">
+        <div class="flex-dc f14">
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">手机</span>
+                <span class="fg1 ta-right c3">13454546567</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">柜子</span>
+                <span class="fg1 ta-right c3">A10</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">租用时间</span>
+                <span class="fg1 ta-right c3">10天</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">已支付</span>
+                <span class="fg1 ta-right c3">￥100</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">开始时间</span>
+                <span class="fg1 ta-right c3">2017-10-10 10:00</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">结束时间</span>
+                <span class="fg1 ta-right c3">2017-10-10 10:00</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">是否录指纹</span>
+                <span class="fg1 ta-right c3">已录指纹</span>
+            </div>
+            <div class="flex-csb">
+                <span class="flex-none c9">地址</span>
+                <span class="fg1 ta-right c3">广东省东莞市高盛科技园</span>
+            </div>
+        </div>
+    </div>
+    <div class="flex-csb bg-ff p12 mb12">
+        <span class="f15 c9 fg1">订单编号：23523543332</span>
+        <span class="f15 c-diy flex-none">已取件</span>
+    </div>
+    <div class="bg-ff flex-dc jc-sb p12">
+        <div class="flex-dc f14">
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">手机</span>
+                <span class="fg1 ta-right c3">13454546567</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">柜子</span>
+                <span class="fg1 ta-right c3">A10</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">开始时间</span>
+                <span class="fg1 ta-right c3">2017-10-10 10:00</span>
+            </div>
+            <div class="flex-csb mb6">
+                <span class="flex-none c9">结束时间</span>
+                <span class="fg1 ta-right c3">2017-10-10 10:00</span>
+            </div>
+            <div class="flex-csb">
+                <span class="flex-none c9">地址</span>
+                <span class="fg1 ta-right c3">广东省东莞市高盛科技园</span>
+            </div>
+        </div>
+    </div> -->
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+// 获取token
+getToken()
+</script>
+<script>
+request(
+    '', {
+        HTTP_API: 'vv/cupboard/api/index/getOrderInfo',
+        id: getUrlParam('id')
+    },
+    function(res) {
+        console.log('订单详情', res)
+        if (res.code == 1) {
+            var str = ''
+            var order_info = res.data.order_info
+            if (getUrlParam('type') == 1) {
+                str += '<div class="w100 bg-ff mb12 flex-dc order-pane">' +
+                    '<div class="flex-csb ptb10 plr12">' +
+                    '<span class="f14 c9 fg1">订单编号：' + order_info.number + '</span>' +
+                    '<span class="f14 c-diy flex-none">' + order_info.status_text + '</span>' +
+                    '</div>'
+                if (order_info.sorder_list.length >= 1) {
+                    order_info.sorder_list.forEach(function(p1) {
+                        str += '<div class="flex-csb bg-f5 ptb10 plr12">' +
+                            '<img src="' + p1.goods_info.cover + '" alt="" class="order-pic br5">' +
+                            '<div class="flex-dc jc-sb as-st ml10 of-hidden fg1">' +
+                            '<div class="flex-dc ai-fs">' +
+                            '<span class="c3 f14 text-hidden w100">' + p1.goods_info.goods_title + '</span>' +
+                            '<span class="ptb2 plr12 f13 c3 bg-cc br5 mt2 flex-none">' + getRowName(p1.row) + p1.col + '</span>' +
+                            '</div>' +
+                            '<div class="flex-csb pb2">' +
+                            '<span class="c-diy2 f12">￥<span class="f16">' + p1.goods_info.goods_price + '</span></span>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>'
+                    })
+                }
+
+                str += '<div class="flex-csb ptb10 plr12 f13 c9 bb-e5">' +
+                    '<span class="flex-none">共<span class="plr2">' + order_info.son_count + '</span>件商品</span>' +
+                    '<span class="flex-none">小计：<sapn class="f12 c-diy2">￥<span class="f15">' + order_info.orders_money + '</span></sapn>' +
+                    '(优惠￥0.00)</span>' +
+                    '</div>' +
+                    '<div class="flex-csb ptb10 plr12 f13 c9">支付时间：' + format(order_info.ctime * 1000, 'Y-m-d H:i') + '</div>' +
+                    '</div>'
+            } else if (getUrlParam('type') == 4) {
+                str += '<div class="flex-csb bg-ff p12 mb12">' +
+                    '<span class="f15 c9 fg1">订单编号：' + order_info.number + '</span>' +
+                    '<span class="f15 c-diy flex-none">' + order_info.status_text + '</span>' +
+                    '</div>' +
+                    '<div class="bg-ff flex-dc jc-sb p12">' +
+                    '<span class="f15 c0">柜号' + getRowName(order_info.sorder_list.row) + order_info.sorder_list.col + '</span>' +
+                    '<div class="flex-dcc ptb10">'
+                if (order_info.sorder_list.countMoney > 0) {
+                    str += '<span class="c-diy2 f13">(超时费￥' + order_info.sorder_list.countMoney + ')</span>' +
+                        '<span class="f15 c-diy2">￥<span class="f30">' + order_info.orders_money + '</span></span>'
+                } else {
+                    str += '<span class="c9 f13">已消费</span>' +
+                        '<span class="f15 c3">￥<span class="f30">' + order_info.orders_money + '</span></span>'
+                }
+                str += '</div>' +
+                    '<div class="flex-dc f14">' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">手机</span>' +
+                    '<span class="fg1 ta-right c3">' + order_info.sorder_list.goods_info.to_phone + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">取货码</span>' +
+                    '<span class="fg1 ta-right c3">' + order_info.sorder_list.cupboard_code + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">储物时间</span>' +
+                    '<span class="fg1 ta-right c3">' + order_info.sorder_list.countDay + '天</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">已支付</span>' +
+                    '<span class="fg1 ta-right c3">￥' + order_info.orders_money + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">存储时间</span>' +
+                    '<span class="fg1 ta-right c3">' + format(order_info.sorder_list.goods_info.s_time * 1000, 'Y-m-d H:i') + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">结束时间</span>' +
+                    '<span class="fg1 ta-right c3">' + format(order_info.sorder_list.goods_info.t_time * 1000, 'Y-m-d H:i') + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb">' +
+                    '<span class="flex-none c9">地址</span>' +
+                    '<span class="fg1 ta-right c3">' + order_info.sorder_list.goods_info.station_addr + '</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="bottom-fixed w100 bg-ff p12 flex-cfe" style="display:none">' +
+                    '<button type="button" class="c-diy b-diy br5 f14 ptb4 plr10 flex-none">立即支付</button>' +
+                    '</div>'
+
+            } else if (getUrlParam('type') == 8) {
+                str += '<div class="flex-csb bg-ff p12 mb12">' +
+                    '<span class="f15 c9 fg1">订单编号：' + order_info.number + '</span>' +
+                    '<span class="f15 c-diy flex-none">' + order_info.status_text + '</span>' +
+                    '</div>' +
+                    '<div class="bg-ff flex-dc jc-sb p12">' +
+                    '<div class="flex-dc f14">' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">手机</span>' +
+                    '<span class="fg1 ta-right c3">' + order_info.sorder_list.goods_info.to_phone + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">柜子</span>' +
+                    '<span class="fg1 ta-right c3">' + getRowName(order_info.sorder_list.row) + order_info.sorder_list.col + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">租用时间</span>' +
+                    '<span class="fg1 ta-right c3">' + order_info.sorder_list.countDay + '天</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">已支付</span>' +
+                    '<span class="fg1 ta-right c3">￥' + order_info.orders_money + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">开始时间</span>' +
+                    '<span class="fg1 ta-right c3">' + format(order_info.sorder_list.goods_info.s_time * 1000, 'Y-m-d H:i') + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">结束时间</span>' +
+                    '<span class="fg1 ta-right c3">' + format(order_info.sorder_list.goods_info.t_time * 1000, 'Y-m-d H:i') + '</span>' +
+                    '</div>' +
+                    // '<div class="flex-csb mb6">' +
+                    // '<span class="flex-none c9">是否录指纹</span>' +
+                    // '<span class="fg1 ta-right c3">未录指纹</span>' +
+                    // '</div>' +
+                    '<div class="flex-csb">' +
+                    '<span class="flex-none c9">地址</span>' +
+                    '<span class="fg1 ta-right c3">' + order_info.sorder_list.goods_info.station_addr + '</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>'
+
+            } else if (getUrlParam('type') == 6) {
+                str += '<div class="flex-csb bg-ff p12 mb12">' +
+                    '<span class="f15 c9 fg1">订单编号：' + order_info.number + '</span>' +
+                    '<span class="f15 c-diy flex-none">' + order_info.status_text + '</span>' +
+                    '</div>' +
+                    '<div class="bg-ff flex-dc jc-sb p12">' +
+                    '<div class="flex-dc f14">' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">手机</span>' +
+                    '<span class="fg1 ta-right c3">' + order_info.sorder_list.goods_info.to_phone + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">柜子</span>' +
+                    '<span class="fg1 ta-right c3">' + getRowName(order_info.sorder_list.row) + order_info.sorder_list.col + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">开始时间</span>' +
+                    '<span class="fg1 ta-right c3">' + format(order_info.sorder_list.goods_info.s_time * 1000, 'Y-m-d H:i') + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">结束时间</span>' +
+                    '<span class="fg1 ta-right c3">' + format(order_info.sorder_list.goods_info.t_time * 1000, 'Y-m-d H:i') + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb">' +
+                    '<span class="flex-none c9">地址</span>' +
+                    '<span class="fg1 ta-right c3">' + order_info.sorder_list.goods_info.station_addr + '</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>'
+            }
+
+            $('body').html(str)
+        } else {
+            layer_msg(res.msg)
+        }
+    })
+</script>

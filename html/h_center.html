@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>个人中心</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body style="display:none">
+    <a href="h_profile.html" class="w100 bg-ff p12 flex-csb mb12" id="profile">
+        <div class="flex-cfs flex-none">
+            <img src="" alt="" id="avatar" class="center-avatar br-circle mr12" id="avatar">
+            <div class="flex-dc fg1">
+                <span class="f15 c3" id="nickname"></span>
+            </div>
+        </div>
+        <div class="flex-center p8 pr0">
+            <img src="../img/icon_8.png" alt="" class="arrow-icon">
+        </div>
+    </a>
+    <ul class="bg-ff mt10">
+        <li>
+            <a href="h_wallet.html" class="flex-csb plr12 ptb15 bb-e5">
+                <div class="flex-cfs fg1">
+                    <img src="../img/icon_9.png" alt="" class="menu-icon">
+                    <span class="f15 c3 ml12 fg1">我的钱包</span>
+                </div>
+                <img src="../img/icon_8.png" alt="" class="arrow-icon">
+            </a>
+        </li>
+        <li>
+            <a href="h_order_list.html" class="flex-csb plr12 ptb15 bb-e5">
+                <div class="flex-cfs fg1">
+                    <img src="../img/icon_7.png" alt="" class="menu-icon">
+                    <span class="f15 c3 ml12 fg1">历史订单</span>
+                </div>
+                <img src="../img/icon_8.png" alt="" class="arrow-icon">
+            </a>
+        </li>
+        <li>
+            <a href="h_locker.html" class="flex-csb plr12 ptb15 bb-e5">
+                <div class="flex-cfs fg1">
+                    <img src="../img/icon_6.png" alt="" class="menu-icon">
+                    <span class="f15 c3 ml12 fg1">我的柜子</span>
+                </div>
+                <img src="../img/icon_8.png" alt="" class="arrow-icon">
+            </a>
+        </li>
+    </ul>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script>
+// 获取token
+getToken()
+</script>
+<script>
+request(
+    '', {
+        HTTP_API: 'vv/usercenter/api/user/profile',
+        token: getStorage("token")
+    },
+    function(res) {
+        console.log('个人中心', res)
+        if (res.code == 1) {
+            $('#avatar').attr('src', res.data.userinfo.avatar)
+            $('#nickname').text(res.data.userinfo.nickname)
+        } else {
+            console.log(res.msg)
+        }
+    }
+)
+</script>

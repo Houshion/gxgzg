@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>手机绑定</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <link rel="stylesheet" href="../css/swiper.min.css">
+  <link rel="stylesheet" href="../css/dropload.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body class="bg-ff p15" style="display:none">
+	<form class="flex-dcc" id="form">
+		<div class="w100 flex-csb bg-f5 br8 plr12 mb12">
+			<span class="f15 c3 flex-none ptb12 pr12">手机号码</span>
+			<input type="tel" name="mobile" id="mobile" placeholder="请输入手机号码" tip-text="手机号码" class="fg1 ptb12 c0 f15" required dtype="mobile">
+		</div>
+		<div class="w100 flex-csb">
+			<div class="flex-csb bg-f5 br8 plr12 mr8 fg1">
+				<span class="f15 c3 flex-none ptb12 pr12">验证码</span>
+				<input type="tel" name="captcha" id="code" placeholder="请输入验证码" tip-text="验证码" class="fg1 ptb12 c0 f15" required>
+			</div>
+			<button type="button" class="flex-center flex-none bg-diy br8 plr12 ptb12 f15 cf" id="code_btn" onclick="getCode()">获取验证码</button>
+		</div>
+		<input type="hidden" name="HTTP_API" value="vv/usercenter/api/user/changemobile">
+		<input type="hidden" name="token" class="token" value="">
+		<button type="button" class="flex-center ta-center w100 bg-diy br8 f15 cf mt30 ptb12 submit_btn" onclick="formSubmit('form','','map.html','-2')">确认</button>
+	</form>
+</body>         
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>  
+<script type="text/javascript" src="../js/dropload.min.js"></script> 
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script>
+  // 获取token
+  getToken()
+</script>

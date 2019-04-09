@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>补货详情</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body class="flex-dcc" style="height:100vh;display:none">
+    <div class="w100 flex-dc bg-ff plr12 ptb10 mb12 flex-none">
+        <span class="f15 c0 fw-bold">设备编号：
+            <span id="macno">523523500</span>
+        </span>
+        <div class="flex-fefs mt2">
+            <span class="f13 c9 fg1" id="address">高盛科技园</span>
+        </div>
+    </div>
+    <div class="w100 list-wrap bg-ff fg1 of-scroll">
+        <ul class="list">
+        </ul>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    // 获取token
+    getToken()
+
+    // 调取微信jssdk
+    getTicket({
+        HTTP_API: "vv/usercenter/api/user/thirdticket",
+        platform: "wechat"
+    }, "");
+</script>
+<script>
+    var str = '';
+    init();
+
+    function init() {
+        ajaxPost({
+            HTTP_API: "vv/cupboard/api/cupboardgift/getLatticeList",
+            macno: getParam().macno,
+            token: getItem("token")
+        }, "", function (res) {
+            if (res.code == 1) {
+                $("#macno").text(getParam().macno);
+                $("#address").text(res.data.address_info.address);
+                $("body").show();
+                res.data.list.forEach(item => {
+                    if (item.is_sell != 1) {
+                        var btn =
+                            '<button class="ptb2 plr15 f14 cf bg-diy br5 flex-none" onclick="change(this)">更换</button>'
+                    } else {
+                        var btn =
+                            '<button class="ptb2 plr15 f14 cf bg-diy3 br5 flex-none" onclick="supplement(this)">补货</button>'
+                    }
+                    str += '<li class="p12 bb-e5 flex-csb" data-resdata=\'' + JSON.stringify(item) +
+                        '\'>' +
+                        '<span class="plr20 f25 c9 bg-f5 br5 flex-none">' + getRowName(item.row) + item
+                        .col +
+                        '</span>' +
+                        '<div class="flex-dc fg1 pl10">' +
+                        '<span class="f15 c3">' + ((item.is_sell == 0 && item.goodsInfo) ? item.goodsInfo
+                            .title : "暂无") + '</span>' +
+                        '<span class="c-diy2 f12">￥<span class="f16">' + ((item.is_sell == 0 && item.goodsInfo) ?
+                            item.goodsInfo.price : "暂无") +
+                        '</span></span>' +
+                        '</div>' + btn + '</li>'
+                });
+                $(".list").empty().html(str);
+            } else {
+                layer_msg(res.msg)
+                setTimeout(() => {
+                    WeixinJSBridge.call('closeWindow');
+                }, 1500);
+            }
+        });
+    }
+
+    function change(_this) {
+        var resData = $(_this).parents("li").data("resdata");
+        setItem("replenish", JSON.stringify(resData));
+        goTo("h_replenish_list.html", "macno=" + getParam().macno + "&type=" + getParam().type);
+    }
+
+    function supplement(_this) {
+        var resData = $(_this).parents("li").data("resdata");
+        ajaxPost({
+            HTTP_API: "vv/cupboard/api/cupboardgift/setCupboardBoxGift",
+            cupboardid: resData.cupboard_id,
+            box_id: resData.id,
+            token: getItem("token"),
+        }, "", function (res) {
+            if (res.code == 1) {
+                layer_msg(res.msg)
+            } else {
+                layer_msg(res.msg)
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        });
+    }
+</script>

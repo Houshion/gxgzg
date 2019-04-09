@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>历史订单</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body>
+    <ul class="flex-csb plr12 ptb10 w100 bg-ff mb12 p-fixed" style="width:100%;left:0;top:0">
+        <li class="flex1 flex-center">
+            <span class="order-menu w80 ptb4 flex-center ta-center f15 c9 ptb6 br25 active" data-type="1" onclick="switchMenu(this)">购物</span>
+        </li>
+        <li class="flex1 flex-center">
+            <span class="order-menu w80 ptb4 flex-center ta-center f15 c9 ptb6 br25" data-type="4" onclick="switchMenu(this)">储物</span>
+        </li>
+        <li class="flex1 flex-center">
+            <span class="order-menu w80 ptb4 flex-center ta-center f15 c9 ptb6 br25" data-type="8" onclick="switchMenu(this)">租赁</span>
+        </li>
+        <li class="flex1 flex-center">
+            <span class="order-menu w80 ptb4 flex-center ta-center f15 c9 ptb6 br25" data-type="6" onclick="switchMenu(this)">快递</span>
+        </li>
+    </ul>
+    <div class="list-wrap" style="padding-top:0.62rem">
+        <ul class="list">
+        </ul>
+    </div>
+    <div class="w100 plr12 mt60 empty-pane" style="display:none">
+        <div class="flex-dcc pt60">
+            <img src="../img/icon_38.png" class="empty-icon">
+            <span class="f14 c9 mt4">暂无订单</span>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+// 获取token
+getToken()
+</script>
+<script>
+getList(1)
+// alert(getItem("token"))
+
+function getList(type) {
+    console.log(type)
+    var page = 0,
+        pagesize = 10,
+        str = ''
+    $('.list-wrap').dropload({
+        scrollArea: window,
+        loadDownFn: function(me) {
+            $('.dropload-down').remove()
+            page++
+            request(
+                '', {
+                    HTTP_API: 'vv/cupboard/api/index/getOrderList',
+                    type: type,
+                    page: page,
+                    pagesize: pagesize
+                },
+                function(res) {
+                    console.log('订单列表', res)
+                    if (res.code == 1) {
+                        if (page == 1 && res.data.list.length == 0) {
+                            $('.empty-pane').show()
+                        }
+                        if (res.data.list.length >= 1) {
+                            if (type == 1) { // 售货柜
+                                res.data.list.forEach(function(p1) {
+                                    str +=
+                                        '<li class="w100 bg-ff mb12 flex-dc order-pane" data-id="' + p1.id + '" data-type="1">' +
+                                        '<div class="flex-csb ptb10 plr12">' +
+                                        '<span class="f14 c9 fg1">' + p1.number + '</span>' +
+                                        '<span class="f14 c-diy flex-none">' + p1.status_text +
+                                        '</span>' +
+                                        '</div>'
+                                    if (p1.sorder_list.length >= 1) {
+                                        p1.sorder_list.forEach(function(p2) {
+                                            str += '<div class="flex-csb bg-f5 ptb10 plr12">' +
+                                                '<img src="' + p2.goods_info.cover + '" alt="" class="order-pic br5">' +
+                                                '<div class="flex-dc jc-sb as-st ml10 of-hidden fg1">' +
+                                                '<div class="flex-dc ai-fs">' +
+                                                '<span class="c3 f14 text-hidden w100">' + p2.goods_info.goods_title + '</span>' +
+                                                '<span class="ptb2 plr12 f13 c3 bg-cc br5 mt2 flex-none">' + getRowName(p2.row) + p2.col + '</span>' +
+                                                '</div>' +
+                                                '<div class="flex-csb pb2">' +
+                                                '<span class="c-diy2 f12">￥<span class="f16">' + p2.goods_info.goods_price + '</span></span>' +
+                                                '</div>' +
+                                                '</div>' +
+                                                '</div>'
+
+                                        })
+                                    }
+                                    str += '<div class="flex-csb ptb10 plr12 f13 c9">' +
+                                        '<span class="flex-none">共<span class="plr2">' + p1.son_count + '</span>件商品</span>' +
+                                        '<span class="flex-none">小计：<sapn class="f12 c-diy2">￥<span class="f15">' + p1.orders_money + '</span></sapn>(优惠￥0.00)</span>' +
+                                        '</div>' +
+                                        '</li>'
+                                })
+                            } else if (type == 4) { //储物柜
+                                res.data.list.forEach(function(p1) {
+                                    var hasOver = "",
+                                        overBtn = "";
+
+                                    if (p1.sorder_list.countMoney > 0) {
+                                        hasOver =
+                                            '<div class="flex-dc ai-fe flex-none">' +
+                                            '<span class="f12 c-diy2 lh14">￥<span class="f18">' +
+                                            p1.orders_money + '</span></span>' +
+                                            '<span class="f12 c-diy2 lh14">(超时费￥' + p1.sorder_list
+                                            .countMoney + ')</span>' +
+                                            '</div>';
+                                        overBtn =
+                                            '<div class="flex-cfe ptb10 plr12 f13 c9">' +
+                                            '<button type="button" class="c-diy b-diy br5 f14 ptb4 plr6">立即支付</button>' +
+                                            '</div>';
+                                    } else {
+                                        hasOver =
+                                            '<div class="flex-dc ai-fe flex-none">' +
+                                            '<span class="f12 lh14">￥<span class="f18">' +
+                                            p1.orders_money + '</span></span>' +
+                                            '</div>';
+                                        if (p1.status == 0) {
+                                            overBtn =
+                                                '<div class="flex-cfe ptb10 plr12 f13 c9">' +
+                                                '<button type="button" class="c-diy b-diy br5 f14 ptb4 plr6">立即支付</button>' +
+                                                '</div>';
+                                        }
+                                    }
+                                    str +=
+                                        '<li class="w100 bg-ff mb12 flex-dc order-pane" data-id="' + p1.id + '" data-type="4">' +
+                                        '<div class="flex-csb ptb10 plr12 bb-e5">' +
+                                        '<span class="f14 c9 fg1">柜号' + getRowName(p1.sorder_list.row) + p1.sorder_list
+                                        .col + '</span>' +
+                                        '<span class="f14 c-diy flex-none">' + p1.status_text +
+                                        '</span>' +
+                                        '</div>' +
+                                        '<div class="flex-csb ptb10 plr12">' +
+                                        '<span class="f14 c0 fg1">' + p1.sorder_list.goods_info.station_addr + '</span>' + hasOver +
+                                        '</div></li>'
+                                })
+                            } else if (type == 8) { // 租赁柜
+                                res.data.list.forEach(function(p1) {
+                                    str +=
+                                        '<li class="w100 bg-ff mb12 flex-dc order-pane" data-id="' + p1.id + '" data-type="8">' +
+                                        '<div class="flex-csb ptb10 plr12 bb-e5">' +
+                                        '<span class="f14 c9 fg1">柜号' + getRowName(p1.sorder_list
+                                            .row) + p1.sorder_list
+                                        .col + '</span>' +
+                                        '<span class="f14 c-diy flex-none">' + p1.status_text +
+                                        '</span>' +
+                                        '</div>'
+
+                                    if (p1.has_zhiwen == 1 && p1.is_fingerprint == 1) {
+                                        str += '<div class="flex-csb ptb10 plr12">' +
+                                            '<span class="f14 c0 fg1">' + p1.sorder_list.goods_info
+                                            .station_addr + '</span>' +
+                                            '<div class="flex-dc ai-fe flex-none">' +
+                                            '<span class="f12 c3 lh14">￥<span class="f18">' +
+                                            p1.orders_money + '</span></span>' +
+                                            '<span class="f12 c3 lh14">(已录指纹)</span>' +
+                                            '</div>' +
+                                            '</div>'
+                                    } else if(p1.has_zhiwen == 0 && p1.is_fingerprint == 1) {
+                                        str += '<div class="flex-csb ptb10 plr12">' +
+                                            '<span class="f14 c0 fg1">' + p1.sorder_list.goods_info
+                                            .station_addr + '</span>' +
+                                            '<div class="flex-dc ai-fe flex-none">' +
+                                            '<span class="f12 c-diy2 lh14">￥<span class="f18">' +
+                                            p1.orders_money + '</span></span>' +
+                                            '<span class="f12 c-diy2 lh14">(未录指纹)</span>' +
+                                            '</div>' +
+                                            '</div>' +
+                                            '<div class="flex-cfe ptb10 mlr12 f13 c9 bt-e5">' +
+                                            '<button type="button" class="c-diy b-diy br5 f14 ptb4 plr6 record-fingerprint" data-phone="' + p1.sorder_list.goods_info
+                                            .to_phone + '" data-id="' + p1.id + '" data-cupboard_id="' + p1.sorder_list.goods_info
+                                            .cupboard_id + '">补录指纹</button>' +
+                                            '</div>'
+                                    }else{
+                                        str += '<div class="flex-csb ptb10 plr12">' +
+                                            '<span class="f14 c0 fg1">' + p1.sorder_list.goods_info
+                                            .station_addr + '</span>' +
+                                            '<div class="flex-dc ai-fe flex-none">' +
+                                            '<span class="f12 c3 lh14">￥<span class="f18">' +
+                                            p1.orders_money + '</span></span>' +
+                                            '</div>' +
+                                            '</div>'
+                                    }
+                                    str += '</li>'
+                                })
+                            } else if (type == 6) { // 快递柜
+                                res.data.list.forEach(function(p1) {
+                                    str +=
+                                        '<li class="w100 bg-ff mb12 flex-dc order-pane" data-id="' + p1.id + '" data-type="6">' +
+                                        '<div class="flex-csb ptb10 plr12 bb-e5">' +
+                                        '<span class="f14 c9 fg1">柜号' + getRowName(p1.sorder_list
+                                            .row) + p1.sorder_list
+                                        .col + '</span>'
+                                    if (p1.status == 131) {
+                                        str += '<span class="f14 c-diy flex-none">待取件</span>'
+                                    } else {
+                                        str += '<span class="f14 c-diy flex-none">' + p1.status_text +
+                                            '</span>'
+                                    }
+
+                                    str += '</div>'
+                                    str += '<div class="flex-csb ptb10 plr12">' +
+                                        '<span class="f14 c0 fg1">' + p1.sorder_list.goods_info
+                                        .station_addr + '</span>' +
+                                        '<div class="flex-dc ai-fe flex-none">' +
+                                        '<span class="f12 c0 lh14">￥<span class="f18">' +
+                                        p1.orders_money + '</span></span>' +
+                                        '</div>' +
+                                        '</div>'
+                                    if (p1.status == 131) {
+                                        str += '<div class="flex-cfe ptb10 mlr12 f13 c9 bt-e5">' +
+                                            '<button type="button" class="c-diy b-diy br5 f14 ptb4 plr6 send-message" data-phone="' + p1.sorder_list.goods_info
+                                            .to_phone + '" data-id="' + p1.id + '" data-cupboard_id="' + p1.sorder_list.goods_info
+                                            .cupboard_id + '">重发信息</button>' +
+                                            '</div>'
+                                    }
+                                    str += '</li>'
+                                })
+                            }
+                            $('.list').append(str)
+                        } else {
+                            me.lock()
+                            me.noData()
+                        }
+                        me.resetload()
+                    }
+                }
+            )
+        }
+    })
+}
+
+function switchMenu(obj) {
+    if ($(obj).hasClass('active')) {
+        return false
+    }
+    $('.order-menu').removeClass('active')
+    $(obj).addClass('active')
+    $('.list').html('')
+    $('.empty-pane').hide()
+    getList($(obj).data('type'))
+}
+
+$('.list').on('click', '.order-pane', function(e) {
+    window.location.href = 'h_order_detail.html?id=' + $(this).data('id') + '&type=' + $(this).data('type')
+})
+
+var on_off = 0
+$('.list').on('click', '.send-message', function(e) {
+    e.stopPropagation()
+    if (on_off) return false
+    on_off = 1
+    var that = this
+    var l = layer_load('发送中...')
+    request(
+        '', {
+            HTTP_API: ' vv/cupboard/api/index/sendCodeAgain',
+            cupboard_id: $(that).data('cupboard_id'),
+            oid: $(that).data('id'),
+            mobile: $(that).data('phone')
+        },
+        function(res) {
+            console.log(res)
+            layer.close(l)
+            on_off = 0
+            if (res.code == 1) {
+                layer_msg('发送成功')
+            } else {
+                layer_msg(res.msg)
+            }
+        }
+    )
+})
+
+$('.list').on('click', '.record-fingerprint', function(e) {
+    e.stopPropagation()
+    if (on_off) return false
+    on_off = 1
+    var that = this
+    var l = layer_load('提交中...')
+    request(
+        '', {
+            HTTP_API: ' vv/cupboard/api/index/addZhiwen',
+            cupboard_id: $(that).data('cupboard_id'),
+            oid: $(that).data('id'),
+            mobile: $(that).data('phone')
+        },
+        function(res) {
+            console.log(res)
+            layer.close(l)
+            on_off = 0
+            if (res.code == 1) {
+                layer_msg('请在机器上录取指纹')
+            } else {
+                layer_msg(res.msg)
+            }
+        }
+    )
+})
+</script>

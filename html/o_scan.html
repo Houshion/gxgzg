@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>扫一扫</title>
+</head>
+
+<body>
+
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    getToken()
+
+    // 调取微信jssdk
+    getTicket({
+        HTTP_API: "vv/usercenter/api/user/thirdticket",
+        platform: "wechat"
+    }, "");
+
+    ScanCode();
+
+    // 调取微信扫码
+    function ScanCode() {
+        var l = layer_load("请稍候...")
+        wx.ready(function () {
+            layer.close(l)
+            wx.scanQRCode({
+                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+
+                    var urlParam = res.resultStr.split("?")[1];
+                    var cupboard_type = urlParam.split("|")[0].split("=")[1];
+                    var macno = urlParam.split("|")[1].split("=")[1];
+
+                    var href, status = true;
+                    setItem("macno", macno)
+                    if (!getOnline(macno)) {
+                        layer_msg("设备不在线");
+                        setTimeout(() => {
+                            WeixinJSBridge.call('closeWindow');
+                        }, 1500);
+                    } else {
+                        if (getItem("isworker") == 1) {
+                            window.location.href = "h_replenish.html?macno=" + macno + "&type=" +
+                                cupboard_type;
+                            return;
+                        } else {
+                            switch (cupboard_type) {
+                                case "1": //售货柜
+                                    href = "o_buy_list.html";
+                                    break;
+                                case "2": //快递柜
+                                    href = "o_express.html";
+                                    break;
+                                case "3": //礼品柜
+                                    status = false
+                                    if (isHadBox()) {
+                                        status = true;
+                                        href = "o_share_list.html";
+                                    } else {
+                                        goTo("o_share_open.html?macno=" + macno)
+                                    }
+                                    break;
+                                case "4": //储物柜、租赁柜
+                                    ajaxPost({
+                                        HTTP_API: "vv/cupboard/api/index/hasLeaseCupboard",
+                                        token: getItem("token"),
+                                        macno: macno
+                                    }, "", function (res) {
+                                        // alert(JSON.stringify(res))
+                                        if (res.code == 1 && res.data == 1) {
+                                            href = "o_rent_pick.html"
+                                        } else {
+                                            href = "o_rent_detail.html";
+                                        }
+                                    }, false);
+                                    break;
+                            }
+                            if (status) {
+                                goTo(href, "macno=" + macno);
+                            }
+                        }
+                    }
+
+                    // location.href = "../html/o_pay.html?type=1&macno=" + res.resultStr;
+                },
+                error: function (err) {
+                    dlctipbox.show(err);
+                }
+            });
+        })
+    }
+
+    function getOnline(macno) {
+        var status = false;
+        ajaxPost({
+            HTTP_API: "vv/cupboard/api/index/isCupboardOnline",
+            token: getItem("token"),
+            macno: macno
+        }, "", function (res) {
+            if (res.code == 1) {
+                status = true
+            }
+        }, false);
+        return status;
+    }
+</script>

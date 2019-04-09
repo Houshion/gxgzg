@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>支付结果</title>
+
+</head>
+
+<body>
+    <div id="rentPay">
+        <div class="title ta-center pd-20 bfff">
+            <div class="box">
+                <div class="img">
+                    <img src="../img/icon_37.png" class="wd-100">
+                </div>
+                <div class="payMsg">支付成功</div>
+            </div>
+            <div class="takeCode mg-t-5 type1 hide">
+                取货码：
+                <span class="code">123456789</span>
+            </div>
+            <div class="takeCode mg-t-5 type2 hide">
+                您已成功租用
+                <span class="boxNum">A10</span>
+                柜子
+            </div>
+            <div class="line mg-t-20"></div>
+        </div>
+        <div class="message pd-20 bfff">
+            <div class="flex flexBetween lh26">
+                <div>柜号</div>
+                <div class="boxNum">A10</div>
+            </div>
+            <div class="flex flexBetween lh26">
+                <div>手机</div>
+                <div class="phone">18888888888</div>
+            </div>
+            <div class="flex flexBetween lh26">
+                <div>价格</div>
+                <div class="price">￥1000.00</div>
+            </div>
+            <div class="flex flexBetween lh26">
+                <div>租用天数</div>
+                <div class="day">10天</div>
+            </div>
+            <div class="flex flexBetween lh26">
+                <div>开始时间</div>
+                <div class="ctime">2018-10-10 10:10:10</div>
+            </div>
+            <div class="cred hide">温馨提示：请在指纹读头上录取指纹</div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    getToken();
+    init();
+
+    function init() {
+
+        var orderInfo = JSON.parse(getItem("orderInfo"));
+
+        console.log(getParam().rentType)
+
+        switch (getParam().rentType) {
+            case "1":
+                $(".type1").show()
+                break;
+            case "2":
+                $(".type2").show()
+                break;
+            default:
+                break;
+        }
+
+        $(".boxNum").text(getRowName(orderInfo.boxinfo.row) + orderInfo.boxinfo.col);
+        $(".phone").text(orderInfo.phone);
+        $(".price").text("￥" + orderInfo.orderpayinfo.pay_money);
+        $(".day").text(orderInfo.day + "天");
+        $(".ctime").text(turnTimestamp(orderInfo.from_time * 1000, "Y-m-d H:i:s"));
+        $(".code").text(getItem("code"))
+    }
+</script>

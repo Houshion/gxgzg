@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>充值</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body style="display:none">
+    <div class="bg-ff plr12">
+        <h2 class="f15 c6 ptb15">充值金额</h2>
+        <div class="flex-csb ac-sb r-wrap list">
+        </div>
+    </div>
+    <div class="pt30 pb12 plr15">
+        <button type="button" class="flex-center ta-center w100 bg-diy br8 f16 cf ptb12" onclick="charge()">立即充值</button>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script>
+// 获取token
+getToken()
+</script>
+<script>
+request(
+    '', {
+        HTTP_API: 'vv/money/api/index/rechargePackage'
+    },
+    function(res) {
+        console.log('充值套餐列表', res)
+        if (res.code == 1) {
+            var str = ''
+            res.data.forEach(function(p1, p2) {
+                str += '<label class="plr4 w50 pb10">' +
+                    '<input type="radio" name="charge_type" class="charge-type" value="' + p1.taocanId + '" hidden data-money="' + p1.chongMoney + '">' +
+                    (
+                        p1.giftMoney > 0 ?
+                        '<div class="flex-dcc jc-center br8 charge-bar p-r">' +
+                        '<span class="f16 charge-money">' + (p1.chongMoney * 1 - p1.giftMoney * 1).toFixed(0) + '元</span>' +
+                        '<span class="f13 discount-money" style="text-decoration:line-through;margin-top:-0.03rem">' + Number(p1.chongMoney).toFixed(0) + '元</span>' +
+                        '<span class="discount bg-diy2 f12 cf ptb2 plr4 p-a">' + Number(p1.discount).toFixed(0) + '折</span>' +
+                        '</div>' :
+                        '<div class="flex-dcc jc-center br8 charge-bar p-r">' +
+                        '<span class="f16 charge-money">' + Number(p1.chongMoney).toFixed(0) + '元</span>' +
+                        '</div>'
+                    ) +
+                    '</label>'
+            })
+            $('.list').html(str)
+            $('.charge-type').eq(0).prop('checked', true)
+        } else {
+            console.log(res.msg)
+        }
+    }
+)
+
+var on_off = 0
+
+function charge() {
+    if (on_off) return false
+    on_off = 1
+    var l = layer_load('提交中...')
+    var package_id = $('.charge-type:checked').val()
+    var money = $('.charge-type:checked').data('money')
+    request(
+        '', {
+            HTTP_API: 'vv/money/api/index/chongzhi',
+            taocan_id: package_id,
+            money: money
+        },
+        function(res1) {
+            console.log('套餐充值', res1)
+            on_off = 0
+            if (res1.code == 1) {
+                request(
+                    '', {
+                        HTTP_API: 'vv/weixinpay/api/index/pay',
+                        openid: getStorage('openid'),
+                        money: res1.data.money,
+                        trade_no: res1.data.paylog,
+                        trade_type: 'JSAPI'
+                    },
+                    function(res2) {
+                        console.log('微信支付', res2)
+                        layer.close(l)
+                        if (res2.code == 1) {
+                            jsApiParameters = res2.data
+                            callpay()
+                        } else {
+                            layer_msg(res2.msg)
+                        }
+                    }
+                )
+            } else {
+                layer_msg(res1.msg)
+            }
+        }
+    )
+}
+</script>

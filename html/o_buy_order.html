@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>提交订单</title>
+</head>
+
+<body style="display:none">
+    <div id="buyOrder">
+        <div class="deviceMsg bfff pd-10 mg-t-10">
+            <div class="font15">设备编号：
+                <span id="macno"></span>
+            </div>
+            <div class="font13 c666">地址：
+                <span id="address"></span>
+            </div>
+        </div>
+        <div class="goodsMsg">
+            <div class="coupons pd-10 bfff border-t rArow">优惠券</div>
+            <div class="count pd-10 bfff border-t c666">
+                <div class="flex flexBetween font12">
+                    <div>优惠券抵扣</div>
+                    <div>-￥
+                        <span class="font16 c000 fontb couCut">0</span>
+                    </div>
+                </div>
+                <div class="flex flexBetween">
+                    <div>共
+                        <span class="total" id="totalnum"></span> 件商品</div>
+                    <div>小计：
+                        <span class="cred fontb">￥
+                            <span id="totalprice">8.00</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="pd-10 bfff mg-t-10 border-b">选择支付方式</div>
+            <div class="pd-10 bfff payWay">
+                <div class="yuePay flex flexBetween">
+                    <div class="left flex">
+                        <div class="img mg-r-10">
+                            <img src="../img/icon_12.png" alt="">
+                        </div>
+                        <div class="box">余额</div>
+                    </div>
+                    <div class="right box">
+                        <div class="checkImg check" data-pay_type="money">
+                            <img src="../img/o_pick.png" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="line"></div>
+                <div class="wxPay flex flexBetween">
+                    <div class="left flex">
+                        <div class="img mg-r-10">
+                            <img src="../img/icon_13.png" alt="">
+                        </div>
+                        <div class="box">微信</div>
+                    </div>
+                    <div class="right box">
+                        <div class="checkImg" data-pay_type="weixin">
+                            <img src="../img/o_unpick.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bfff bottom">
+                <div class="mg-10 mainBtn ta-center pd-10 radius10">立即支付</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+getToken()
+
+var loading = layer_load('加载中...') //加载中..
+var pay_type = 'money'
+var totalprice = 0,
+    totalnum = 0;
+var coupon_id = ''
+
+getOrderDetail()
+// getCoupon()
+
+if (getParam().couponId) {
+    coupon_id = getParam().couponId; //获取优惠券id
+    $(".couCut").text(getParam().couponMoney);
+}
+//统计价格
+count();
+
+function count(_this) {
+    // 统计价格
+    var couponMoney = (getParam().couponMoney) ? getParam().couponMoney : 0;
+    totalprice = (totalprice * 1 - couponMoney * 1 <= 0) ? 0 : totalprice * 1 - couponMoney * 1
+    $('#totalprice').text(totalprice)
+}
+
+function getOrderDetail() {
+    var str = ''
+    ajaxPost({
+        HTTP_API: 'vv/cupboard/api/index/getGoodsOrderInfo',
+        cupboard_id: getUrlParam('cupboard_id'),
+        carids: getUrlParam('shopcart_id_str'),
+        token: getItem('token')
+    }, '', function(res) {
+        layer.close(loading)
+        if (res.code == 1) {
+            $('#macno').text(res.data.cupBoardInfo.macno)
+            $('#address').text(res.data.address_info.address)
+            goods_list = res.data.list
+            if (goods_list.length >= 1) {
+                goods_list.forEach(item => {
+                    totalprice += Number(item.goods_info.price)
+                    totalnum++
+                    str +=
+                        '<div class="list flex pd-l-10 pd-t-10 bfff mg-t-10">' +
+                        '<div class="img wd-30 mg-r-15">' +
+                        '<img src="' + item.goods_info.cover + '" class="wd-100">' +
+                        '</div>' +
+                        '<div class="msg wd-70 flex flexWrap jc-sb">' +
+                        '<div class="goodsName wd-100">' + item.goods_info.title + '</div>' +
+                        '<div class="goodsFrom wd-100">' +
+                        '<span>' + getRowName(item.row) + item.col + '</span>' +
+                        '</div>' +
+                        '<div class="goodsPrice wd-100 flex flexBetween flexEnd pd-b-10">' +
+                        '<div class="cred">￥<span>' + item.goods_info.price + '</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>'
+                })
+                $('.coupons').before(str)
+                $('#totalprice').text(totalprice)
+                $('#totalnum').text(totalnum)
+            }
+        } else {
+            layer_msg(res.msg)
+            setTimeout(() => {
+                history.go(-1)
+            }, 1500);
+        }
+    })
+}
+
+// function getCoupon() {
+//     ajaxPost({
+//         HTTP_API: 'vv/coupon/api/index/myCoupons',
+//         status: 0,
+//         token: getItem('token'),
+//         page: 1,
+//         pagesize: 999
+//     }, '', function(res) {
+//         if (res.code == 1) {
+//             if (res.data.list.length >= 1) {
+//                 $('#couponprice').text(res.data.list[0].money).data('coupon_id', res.data.list[0].couponid)
+//             }
+//         }
+//     })
+// }
+
+$(".coupons").on("click", function() {
+    goTo("./o_coupon.html", "type=1&cupboard_id=" + getParam().cupboard_id, "replace")
+})
+
+$('.checkImg').on('click', function() {
+    var check = '../img/o_pick.png'
+    var uncheck = '../img/o_unpick.png'
+    pay_type = $(this).data('pay_type')
+    if (!$(this).hasClass('check')) {
+        $('.checkImg').removeClass('check').children().attr('src', uncheck)
+        $(this).addClass('check').children().attr('src', check)
+    }
+})
+
+// $('.coupons').on('click', function() {
+//     window.replace('o_coupon.html');
+// })
+
+$(".mainBtn").on("click", function(res) {
+    // 生成订单
+    l = layer_load('提交中...')
+    ajaxPost({
+        HTTP_API: "vv/cupboard/api/index/GoodsCupboardAddOrder",
+        cupboard_id: getParam().cupboard_id,
+        carids: getParam().shopcart_id_str,
+        token: getItem("token"),
+        pay_type: pay_type,
+        coupon_id: coupon_id
+    }, "", function(res) {
+        console.log(res, 1)
+        if (res.code == 1) {
+            // 微信支付
+            ajaxPost({
+                HTTP_API: "vv/weixinpay/api/index/pay",
+                openid: getItem("openid"),
+                money: Number(res.data.money),
+                trade_no: res.data.paylog,
+                token: getItem("token")
+            }, "", function(res2) {
+                if (res2.code == 1) {
+                    jsApiParameters = res2.data;
+                    callpay()
+                } else {
+                    layer_msg(res2.msg)
+                }
+            })
+        } else if (res.code == 2) { //余额支付成功返回
+            layer.close(l)
+            layer_message("支付成功，请及时拿走您的商品并关门", function(res) {
+                history.go(-1)
+            }) //余额支付成功
+        } else {
+            layer.close(l)
+            layer_msg(res.msg)
+        }
+    });
+})
+
+// 调用微信JS api 支付
+var jsApiParameters = {};
+
+function jsApiCall(url) {
+    WeixinJSBridge.invoke(
+        "getBrandWCPayRequest",
+        jsApiParameters, // 提交的支付信息
+        function(res) {
+            layer.close(l)
+            if (res.err_msg == "get_brand_wcpay_request:ok") {
+                layer_message("支付成功，请及时拿走您的商品并关门", function() {
+                    history.go(-1)
+                })
+            } else {
+                layer_msg("取消支付");
+            }
+        }
+    );
+}
+
+// 调用微信支付
+function callpay() {
+    if (typeof WeixinJSBridge == "undefined") {
+        if (document.addEventListener) {
+            document.addEventListener("WeixinJSBridgeReady", jsApiCall, false);
+        } else if (document.attachEvent) {
+            document.attachEvent("WeixinJSBridgeReady", jsApiCall);
+            document.attachEvent("onWeixinJSBridgeReady", jsApiCall);
+        }
+    } else {
+        jsApiCall();
+    }
+}
+</script>

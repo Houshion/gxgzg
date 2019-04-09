@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>我的柜子</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body>
+    <div class="list-wrap">
+        <ul class="list">
+            <!-- <li class="bg-ff mb12">
+                <div class="flex-csb bg-ff p12 bb-e5">
+                    <span class="f16 c0 fg1">A10</span>
+                    <span class="f15 c-diy flex-none">使用中</span>
+                </div>
+                <div class="flex-dc f14 p12">
+                    <div class="flex-csb mb6">
+                        <span class="flex-none c9">设备编号</span>
+                        <span class="fg1 ta-right c3">A10</span>
+                    </div>
+                    <div class="flex-csb mb6">
+                        <span class="flex-none c9">租用时间</span>
+                        <span class="fg1 ta-right c3">10天</span>
+                    </div>
+                    <div class="flex-csb mb6">
+                        <span class="flex-none c9">已支付</span>
+                        <span class="fg1 ta-right c3">￥100</span>
+                    </div>
+                    <div class="flex-csb mb6">
+                        <span class="flex-none c9">开始时间</span>
+                        <span class="fg1 ta-right c3">2017-10-10 10:00</span>
+                    </div>
+                    <div class="flex-csb mb6">
+                        <span class="flex-none c9">结束时间</span>
+                        <span class="fg1 ta-right c3">2017-10-10 10:00</span>
+                    </div>
+                    <div class="flex-csb">
+                        <span class="flex-none c9">地址</span>
+                        <span class="fg1 ta-right c3">广东省东莞市高盛科技园</span>
+                    </div>
+                </div>
+            </li> -->
+        </ul>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    // 获取token
+    getToken()
+</script>
+<script>
+    var str = "";
+    request(
+        '', {
+            HTTP_API: 'vv/cupboard/api/index/beusebox',
+            token: getStorage("token"),
+            type: 1
+        },
+        function (res) {
+            res.data.forEach(function (p1) {
+                var now = Date.parse(new Date()) / 1000;
+                str +=
+                    '<li class="bg-ff mb12">' +
+                    '<div class="flex-csb bg-ff p12 bb-e5">' +
+                    '<span class="f16 c0 fg1">' + getRowName(p1.row) + p1
+                    .col + '</span>' +
+                    '<span class="f15 ' + (now > p1.to_time ? "" : "c-diy") +
+                    ' flex-none">' + (now > p1.to_time ?
+                    "已过期" : "使用中") +
+                    '</span>' +
+                    '</div>' +
+                    '<div class="flex-dc f14 p12">' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">设备编号</span>' +
+                    '<span class="fg1 ta-right c3">' + p1.cupboard_macno +
+                    '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">租用时间</span>' +
+                    '<span class="fg1 ta-right c3">' + p1.day + '天</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">已支付</span>' +
+                    '<span class="fg1 ta-right c3">￥' + p1.orderGoodsInfo.price +
+                    '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">开始时间</span>' +
+                    '<span class="fg1 ta-right c3">' + format(p1.from_time *
+                        1000,
+                        "Y-m-d H:i") + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb mb6">' +
+                    '<span class="flex-none c9">结束时间</span>' +
+                    '<span class="fg1 ta-right c3">' + format(p1.to_time * 1000,
+                        "Y-m-d H:i") + '</span>' +
+                    '</div>' +
+                    '<div class="flex-csb">' +
+                    '<span class="flex-none c9">地址</span>' +
+                    '<span class="fg1 ta-right c3">' + p1.adress + '</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '</li>'
+            })
+            $('.list').append(str)
+        }
+    )
+</script>

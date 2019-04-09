@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>补货登录</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body class="bg-ff" style="display:none">
+    <div class="flex-center m0-auto pt60 pb30">
+        <img src="../img/icon_28.png" alt="" class="logo-icon">
+    </div>
+    <div class="p15">
+        <form class="flex-dcc" id="login">
+            <div class="w100 flex-csb bg-f5 br8 plr12 mb12">
+                <span class="f15 c3 flex-none ptb12 pr15">账号</span>
+                <input type="text" name="account" placeholder="请输入登录账号" tip-text="登录账号" class="fg1 ptb12 f15 c0" required>
+            </div>
+            <div class="w100 flex-csb bg-f5 br8 plr12 mb12">
+                <span class="f15 c3 flex-none ptb12 pr15">密码</span>
+                <input type="password" name="password" placeholder="请输入密码" tip-text="密码" class="fg1 ptb12 f15 c0" required>
+            </div>
+            <input type="hidden" name="HTTP_API" value="vv/seller/api/index/login">
+            <input type="hidden" name="token" value="">
+            <button type="button" class="flex-center ta-center w100 bg-diy br8 f15 cf mt30 ptb12 submit_btn" onclick="formSubmit('login','','replenish.html')">登录</button>
+        </form>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script>
+// 获取token
+// getTokenSeller()
+</script>
+<script>
+</script>

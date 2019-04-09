@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>支付结果</title>
+
+</head>
+
+<body>
+    <div id="expressPay">
+        <div class="title ta-center pd-20 bfff">
+            <div class="box">
+                <div class="img">
+                    <img src="../img/icon_37.png" class="wd-100">
+                </div>
+                <div class="payMsg">支付成功</div>
+            </div>
+            <div class="line mg-t-20"></div>
+        </div>
+        <div class="message pd-20 bfff">
+            <div class="flex flexBetween lh26">
+                <div>柜号</div>
+                <div class="boxNum">A10</div>
+            </div>
+            <div class="flex flexBetween lh26">
+                <div>手机</div>
+                <div class="phone">1888888888</div>
+            </div>
+            <div class="flex flexBetween lh26">
+                <div>价格</div>
+                <div class="price">￥5.00/次</div>
+            </div>
+        </div>
+        <div class="operation pd-20 mg-t-20">
+            <div class="mainBtn pd-10 font20">完成寄存</div>
+            <div class="ta-center pd-10 unOpen"></div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    getToken()
+    init();
+
+    function init() {
+        var orderInfo = JSON.parse(getItem("orderInfo"));
+
+        $(".boxNum").text(getRowName(orderInfo.boxinfo.row) + orderInfo.boxinfo.col);
+        $(".phone").text(orderInfo.phone);
+        $(".price").text("￥" + orderInfo.orderpayinfo.pay_money + "/次");
+        getPhone();
+    }
+
+    function getPhone() {
+        ajaxPost({
+            HTTP_API: 'vv/companyinfo/api/index/getInfo'
+        }, "", function (res) {
+            $(".unOpen").html("<a href='tel:"+res.data.company_service+"'>柜子打不开？</a>")
+        });
+    }
+
+    $(".unOpen").on("click", function () {
+
+    })
+
+    $(".mainBtn").on("click", function () {
+        location.href = "o_express.html"
+    });
+</script>

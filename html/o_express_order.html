@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>提交订单</title>
+
+</head>
+
+<body>
+    <div id="expressOrder">
+        <div class="deviceMsg bfff pd-10 mg-t-10">
+            <div class="font15">柜号：
+                <span class="boxNum">A05</span>
+                <span class="font12 cred fontb">￥
+                    <span class="font16 price">5/次</span>
+                </span>
+            </div>
+            <div class="font13 c666">地址：
+                <span class="address">广东省东莞市南城区高盛科技大厦303</span>
+            </div>
+        </div>
+        <div class="goodsMsg mg-t-10">
+            <div class="pd-10 bfff flex border-b h30">
+                <div class="wd-20">手机号</div>
+                <div class="wd-65">
+                    <input type="text" name="mobile" id="mobile" placeholder="请输入手机号码" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"
+                        maxlength="11" />
+                </div>
+            </div>
+            <div class="coupons pd-10 bfff border-b rArow">优惠券</div>
+            <div class="count pd-10 bfff c666">
+                <div class="flex flexBetween font12">
+                    <div>优惠券抵扣</div>
+                    <div>-￥
+                        <span class="font16 c000 fontb couCut">0</span>
+                    </div>
+                </div>
+                <div class="flex flexBetween">
+                    <div>共
+                        <span class="total">1</span> 件商品</div>
+                    <div>小计：
+                        <span class="cred fontb tPrice">￥8.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pd-10 bfff mg-t-10 border-b">选择支付方式</div>
+            <div class="pd-10 bfff payWay">
+                <div class="yuePay flex flexBetween">
+                    <div class="left flex">
+                        <div class="img mg-r-10">
+                            <img src="../img/icon_12.png" alt="">
+                        </div>
+                        <div class="box">余额</div>
+                    </div>
+                    <div class="right box">
+                        <div class="checkImg check" data-payway="money">
+                            <img src="../img/o_pick.png" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="line"></div>
+                <div class="wxPay flex flexBetween">
+                    <div class="left flex">
+                        <div class="img mg-r-10">
+                            <img src="../img/icon_13.png" alt="">
+                        </div>
+                        <div class="box">微信</div>
+                    </div>
+                    <div class="right box">
+                        <div class="checkImg" data-payway="weixin">
+                            <img src="../img/o_unpick.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bfff bottom">
+                <div class="mg-10 mainBtn ta-center pd-10 radius10">立即支付</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    var boxMsg, cupboard_id, charge_type, data, data2, money, phone;
+    var l;
+    getToken()
+    init();
+
+    function init() {
+        boxMsg = JSON.parse(getItem("expressBox"));
+        cupboard_id = getParam().cupboard_id;
+        charge_type = getParam().charge_type;
+        $(".price").text(getParam().price + "/次")
+        $(".address").text(boxMsg.address)
+        console.log(boxMsg)
+        $(".boxNum").text(getRowName(boxMsg.row) + boxMsg.col)
+        data = {
+            HTTP_API: "vv/cupboard/api/index/CupboardAddOrder",
+            cupboard_id: cupboard_id,
+            box_id: boxMsg.id,
+            token: getItem("token"),
+            charge_type: charge_type,
+            pay_type: "money"
+        }
+
+        if (getParam().couponId) {
+            data.coupon_id = getParam().couponId; //获取优惠券id
+            $(".couCut").text(getParam().couponMoney);
+        }
+        // 统计价格
+        var couponMoney = (getParam().couponMoney) ? getParam().couponMoney : 0;
+        money = getParam().price - couponMoney;
+        money = money <= 0 ? 0 : money; //金额小于零则恢复等于零
+        $(".tPrice").text("￥" + money.toFixed(2))
+    }
+
+    $(".checkImg").on("click", function () {
+        var check = "../img/o_pick.png";
+        var uncheck = "../img/o_unpick.png";
+        if (!$(this).hasClass("check")) {
+            $(".checkImg").removeClass("check").children().attr("src", uncheck);
+            $(this).addClass("check").children().attr("src", check);
+        }
+        data.pay_type = $(this).data("payway");
+    })
+
+    $(".coupons").on("click", function () {
+        goTo("./o_coupon.html", "type=4&cupboard_id=" + cupboard_id + "&charge_type=" + charge_type +
+            "&price=" + getParam().price, "replace")
+    })
+
+    $(".mainBtn").on("click", function () {
+        phone = $("#mobile").val();
+        if (phone == "") {
+            layer_msg('请输入手机号码!');
+            return;
+        } else if (!isPhone(phone)) {
+            layer_msg('请输入正确的手机号码!');
+            $("#mobile").focus();
+            return;
+        }
+        data.phone = phone
+        // 生成订单
+        l = layer_load('提交中...')
+        ajaxPost(data, "", function (res) {
+            if (res.code == 1) {
+                console.log(res)
+                getOrderInfo(res.data.backData.paylog) // 提交订单后获取订单信息,余额支付直接成功
+                if (data.pay_type == "weixin") {
+                    // 微信支付
+                    ajaxPost({
+                        HTTP_API: "vv/weixinpay/api/index/pay",
+                        openid: getItem("openid"),
+                        money: res.data.backData.money,
+                        trade_no: res.data.backData.paylog,
+                        token: getItem("token")
+                    }, "", function (res2) {
+                        if (res2.code == 1) {
+                            jsApiParameters = res2.data;
+                            callpay("o_express_pay.html")
+                        } else {
+                            layer_msg(res2.msg)
+                        }
+                    })
+                } else {
+                    layer.close(l)
+                    layer_msg("支付成功") //余额支付成功
+                    setTimeout(() => {
+                        goTo("o_express_pay.html")
+                    }, 1000);
+                }
+            } else {
+                layer.close(l)
+                layer_msg(res.msg);
+                setTimeout(() => {
+                    window.location.href = "o_express.html";
+                }, 1500);
+            }
+        });
+        // location.href = "o_express_pay.html";
+    });
+
+    // 获取订单信息
+    function getOrderInfo(paylog) {
+        ajaxPost({
+            HTTP_API: "vv/order/api/index/getOrderInfoByPaylog",
+            paylog: paylog,
+            token: getItem("token")
+        }, "", function (res) {
+            console.log(res)
+            setItem("orderInfo", JSON.stringify(res.data));
+            layer.close(l)
+        }, false);
+    }
+</script>

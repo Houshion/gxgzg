@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>详情</title>
+    <style>
+        #rentDetail .mainBox .up .row .column {
+            width: 12%;
+            margin-right: 3%;
+        }
+
+        .borderF5 {
+            border: 1px solid #f5f5f5
+        }
+    </style>
+</head>
+
+<body>
+    <div id="rentDetail">
+        <div class="banner">
+            <img src="../img/banner_1.png" class="wd-100">
+        </div>
+        <div class="bfff pd-10">
+            <div class="cred fontb">￥
+                <span class="font18 boxMoney"></span>
+            </div>
+            <div class="flex">
+                <div class="img">
+                    <img src="../img/o_location.png" style="width: 9px; height: 13px">
+                </div>
+                <div class="mg-l-10 boxAddress">
+
+                </div>
+            </div>
+        </div>
+        <div class="mainBox pd-10">
+            <div class="main">
+                <div class="up">
+                    <!-- <div class="row flex">
+                        <div class="column box">1</div>
+                        <div class="column box border grid"></div>
+                        <div class="column box border grid"></div>
+                        <div class="column box border grid"></div>
+                        <div class="column box border grid"></div>
+                        <div class="column box border grid"></div>
+                        <div class="column box border grid"></div>
+                        <div class="column box border grid"></div>
+                        <div class="column box border grid"></div>
+                        <div class="column box border grid"></div>
+                        <div class="column box border grid"></div>
+                    </div> -->
+                </div>
+                <div class="down box mg-t-20">
+                    <div class="b1 mg-r-10 wd-20 box">
+                        <div class="bfff showBox"></div>
+                        <div>可选</div>
+                    </div>
+                    <div class="b2 mg-r-10 wd-20 box">
+                        <div class="bmain showBox"></div>
+                        <div>已选</div>
+                    </div>
+                    <div class="b3 wd-20 box">
+                        <div class="bred showBox"></div>
+                        <div>不可选</div>
+                    </div>
+                </div>
+            </div>
+            <div class="title"></div>
+        </div>
+        <div class="pickBox bfff pd-10 flex flexWrap">
+
+        </div>
+        <div class="pd-10 flex flexAround btn">
+            <div class="box rentBtn">租柜</div>
+            <div class="box mainBtn">储物</div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    var boxMsg, //格子信息
+        cupboardId, //柜子ID
+        charge_type, //收费方式
+        address, //柜子地址
+        price, //单个格子价格
+        fingerPrint; //是否带指纹读头
+    getToken()
+    init();
+
+    function init() {
+        var str = "";
+        if (getParam().macno) {
+            setItem("macno", getParam().macno);
+        }
+
+        ajaxPost({
+            HTTP_API: 'vv/cupboard/api/index/cupboardList',
+            token: getStorage('token'),
+            // macno: '10002',
+            macno: getItem("macno"),
+        }, '', function (res) {
+            var boxNum = res.data.cupBoardInfo.box_num;
+            var column = res.data.cupboard_type_info.column;
+            var row = boxNum / column;
+
+            cupboard_id = res.data.cupBoardInfo.id;
+            charge_type = res.data.charging_type[0].id;
+            address = res.data.address_info.address;
+            price = res.data.charging_type[0].price;
+            fingerPrint = res.data.cupBoardInfo.is_fingerprint;
+
+            $(".boxAddress").text(address);
+            $(".boxMoney").text(price);
+
+            for (var i = 1; i <= row; i++) { // 行
+                str += '<div class="row flex mg-t-5">';
+                for (var j = 1; j <= (column + 1); j++) { // 列
+                    if (j == 1) {
+                        str += '<div class="column box">' + getRowName(i) + '</div>';
+                    } else {
+                        var ban = "",
+                            msg = "";
+                        for (var k = 0; k < res.data.list.length; k++) {
+                            var _this = res.data.list[k]
+                            if (_this.row == i && _this.col == j - 1) {
+                                if (_this.is_sell != 0) {
+                                    ban = "ban";
+                                    msg = JSON.stringify(_this);
+                                } else {
+                                    msg = JSON.stringify(_this);
+                                    break;
+                                }
+                            }
+                        }
+                        str += '<div class="column box border grid ' + ban + '" data-msg=\'' + msg +
+                            '\'></div>';
+                    }
+                }
+                str += '</div>';
+            }
+
+            str += '<div class="row flex mg-t-5"><div class="column box borderF5"></div>';
+            for (var i = 1; i <= column; i++) { // 行
+                str += '<div class="column box borderF5">' + i + '</div>';
+
+            }
+            str += '</div>';
+
+            $(".up").append(str)
+
+            $(".column").height($(".column").width())
+
+            for (var k = 0; k < res.data.list.length; k++) {
+                var _this = res.data.list[k];
+                if (_this.status != 1) {
+                    $(".pickBox").append('<div class="box mg-t-5 mg-b-5" >' + getRowName(_this.row) + _this.col +
+                        '</div>')
+                }
+            }
+
+        })
+    }
+
+    $(".mainBox").on("click", ".grid", function () {
+        if (!$(this).hasClass("ban")) {
+            $(".column").removeClass("pick");
+            $(this).addClass("pick");
+            boxMsg = $(this).data("msg");
+        }
+    })
+
+    $(".rentBtn").on("click", function () {
+        boxMsg.address = address;
+        setItem("rentBox", JSON.stringify(boxMsg))
+        goTo("o_rent_order.html", "type=2&cupboard_id=" + cupboard_id + "&charge_type=8&price=" + price)
+    })
+
+    $(".mainBtn").on("click", function () {
+        boxMsg.address = address;
+        setItem("rentBox", JSON.stringify(boxMsg))
+        goTo("o_rent_order.html", "type=1&cupboard_id=" + cupboard_id + "&charge_type=4&price=" + price + "&fingerPrint=" + fingerPrint)
+    });
+</script>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/o_base.css">
+    <link rel="stylesheet" href="../css/o_style.css">
+    <title>优惠券</title>
+    <style>
+    .empty-pane img {
+        width: 60% !important;
+    }
+
+    .font12 {
+        font-size: 12px !important;
+    }
+    </style>
+</head>
+
+<body style="display: none">
+    <div id="coupon" class="pd-10 flex flexWrap flexBetween">
+        <!-- 优惠券列表 -->
+    </div>
+    <div class="w100 plr12 mt60 empty-pane" style="display:none">
+        <div class="flex-dcc pt60">
+            <img src="../img/icon_38.png" class="empty-icon">
+            <span class="f14 c9 mt4">暂无订单</span>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+var loading = layer_load("加载中..."); //加载中..
+
+getToken();
+
+function init() {
+    //获取优惠券
+    ajaxPost({
+        HTTP_API: 'vv/coupon/api/index/myCoupons',
+        status: 0,
+        token: getItem("token"),
+        pagesize: 50,
+    }, '', function(res) {
+        res.data.list.forEach(item => {
+            var time = format(item.useendtime * 1000, "Y-m-d H:i")
+            $("#coupon").append(
+                '<div class="stamp coupon wd-45 mg-b-15" data-price="' + item.money +
+                '" data-couponid="' + item.id + '">' +
+                '<div class="par">' +
+                '<sub class="sign">￥' +
+                '<span>' + item.money + '</span>' +
+                '</sub>' +
+                '</div>' +
+                '<div class="copy">' +
+                '<div>有效期至:</div>' +
+                '<div class="font12">' + time + '</div>' +
+                '</div>' +
+                '<i></i>' +
+                '</div>'
+            )
+        });
+
+        if (res.data.list.length <= 0) {
+            $(".empty-pane").show();
+        }
+
+        layer.close(loading)
+    });
+}
+
+$("#coupon").on("click", ".coupon", function() {
+    var href;
+    switch (getParam().type) {
+        case "1":
+            href = "o_buy_order.html"
+            break;
+        case "2":
+            break;
+        case "3":
+            href = "o_rent_order.html"
+            break;
+        case "4":
+            href = "o_express_order.html"
+            break;
+    }
+    console.log(href)
+    goTo(href, "cupboard_id=" + getParam().cupboard_id + "&charge_type=" + getParam().charge_type +
+        "&price=" + getParam().price + "&couponMoney=" + $(this).data("price") +
+        "&couponId=" + $(this).data("couponid"), "replace")
+})
+
+init();
+</script>

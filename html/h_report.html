@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>我要报障</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <link rel="stylesheet" href="../css/swiper.min.css">
+  <link rel="stylesheet" href="../css/dropload.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body style="display:none">
+	<div class="flex-dc bg-ff p12 mb12">
+		<span class="f16 c0 fw-bold">设备编号：<span id="macno"></span></span>
+		<div class="flex-fefs mt4">
+			<img src="../img/icon_7.png" alt="" class="location-icon mr4">
+			<span class="f13 c9 fg1" id="address"></span>
+		</div>
+	</div>
+	<div class="bg-ff w100 plr12">
+		<textarea name="content" id="content" rows="5" class="w100 f15 c0 ptb12" placeholder="请输入您的故障信息等内容，我们将及时帮你解决。"></textarea>
+		<div class="w100 flex-cfs r-wrap">
+	        <label class="w25 plr4 flex-none pb12 p-r upload-bar">
+              <img src="../img/icon_14.png" alt="" class="w100 br5 upload-img">
+              <input type="file" name="cover[]" class="file" accept="image/*" capture="camera" multiple hidden data-sel="0" onchange="uploadFiles(this)">
+              <button type="button" class="del-btn flex-center" style="display:none" onclick="delImg(this)">
+                <img src="../img/icon_40.png" alt="">
+              </button>
+          </label>
+	     </div>
+	</div>
+	<div class="pt30 pb12 plr15">
+		<button type="button" class="flex-center ta-center w100 bg-diy br8 f15 cf ptb12">提交</button>
+	</div>
+</body>         
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>  
+<script type="text/javascript" src="../js/dropload.min.js"></script>  
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script>
+  // 获取token
+  getToken()
+</script>
+<script>
+request(
+  '',
+  {
+    HTTP_API:'vv/order/api/index/details',
+    o_id:getUrlParam('order_id')
+  },
+  function(res){
+    console.log('订单详情',res)
+    if(res.code == 1){
+      $('#macno').text(res.data.goods_list[0].device_macno)
+      $('#address').text(res.data.address)
+    }else{
+      console.log(res.msg)
+    }
+  },
+  false
+)
+
+var upload_imgs = []
+var upload_bar = $('.upload-bar').clone()
+function uploadFiles(obj){
+      var reader, result, formData, files, file
+      files = obj.files
+
+      if($(obj).data('sel')==0 && $('.upload-bar').length>5){
+        layer_msg('最多上传5张照片哦')
+        return false
+      }
+
+      if(isIos()){
+        $('input:file').removeAttr('capture')
+      }
+
+      for(var j=0; j<files.length; j++){
+        file = files[j]
+        if(/\.(jpe?g|png|gif)$/i.test(file.name)){
+              reader = new FileReader()
+              reader.addEventListener('load',function(){
+                  result = this.result
+                  formData = new FormData()
+                  formData.append('HTTP_API','api/common/upload')
+                  formData.append('token',getStorage('token'))
+                  formData.append('upload',file)
+                  var l = layer_load('上传中...')
+                  $.ajax({
+                    type:'post',
+                    url:dlcUrl,
+                    data:formData,
+                    processData:false,
+                    contentType:false,
+                    cache:false,
+                    dataType:'JSON',
+                    success:function(res){
+                        layer.close(l)
+                        if(res.code == 1){
+                          $(obj).prop('disabled',false)
+                        	$(obj).siblings('img').attr('src',result)
+                			    $(obj).siblings('.del-btn').show()
+                			    if($(obj).data('sel') == 0){
+                            $(obj).parent().after(upload_bar)
+                          }
+                          $(obj).data('sel',1)
+                          upload_bar = $('.upload-bar:last-child').clone()
+                          $(obj).siblings('.del-btn').data('url',res.data.url)
+                        	upload_imgs.push(res.data.url)
+                        }else{
+                          layer_msg(res.msg)
+                        }
+                    }
+                  })
+              },false)
+              reader.readAsDataURL(file)
+          }
+      }
+  }
+
+  function delImg(obj){
+    var img = $(obj).data('url')
+    upload_imgs.forEach(function(p1,p2){
+      if(p1 == img){
+        upload_imgs.splice(p2,1)
+        $(obj).closest('.upload-bar').remove()
+        return false
+      }
+    })
+  }
+
+  var on_off = 0
+  function report(){
+  	var content = $('#content').val()
+  	if(isNull(content)){
+  		layer_msg('请输入您的报障信息')
+  		return false
+  	}
+
+  	if(on_off) return false
+  	on_off = 1
+  	var l = lay_load('提交中...')
+  	request(
+      '',
+      {
+        HTTP_API:'vv/repairs/api/index/submitrepairs',
+        content:content,
+        macno:getUrlParam('macno')
+        pic:upload_imgs.join(',')
+      },
+      function(res){
+        console.log('报障',res)
+        layer.close(l)
+        on_off = 0
+        if(res.code == 1){
+          layer_msg('提交成功')
+          setTimeout(function(){
+              window.history.go(-1)
+          },1500)
+        }else{
+           layer_msg(res.msg)
+        }
+      }
+    )
+  }
+</script>

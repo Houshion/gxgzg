@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>商品清单</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="../css/swiper.min.css">
+    <link rel="stylesheet" href="../css/dropload.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+
+<body class="flex-dcc bg-ff" style="display:none">
+    <div class="w100 list-wrap bg-ff" style="padding-bottom:0.68rem">
+        <ul class="list">
+        </ul>
+    </div>
+    <div class="bottom-fixed ptb12 plr20" style="background: #ffffff">
+        <button type="button" class="flex-center ta-center w100 ptb12 bg-diy br8 f15 cf">确定</button>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript" src="../js/JForm.js"></script>
+<script type="text/javascript" src="../js/jquery.form.js"></script>
+<script type="text/javascript" src="../js/dlc.js"></script>
+<script type="text/javascript" src="../js/o_base.js"></script>
+<script>
+    // 获取token
+    getToken()
+</script>
+<script>
+    var str = '';
+
+    listParam = {
+        HTTP_API: 'vv/cupboard/api/cupboardgift/giftlist',
+    }
+    if (getParam().type == 1) {
+        listParam.HTTP_API = "/vv/goods/api/index/goodslist";
+        listParam.page = 1;
+        listParam.pagenumber = 100;
+    } else {
+        listParam.token = getStorage("token")
+    }
+    request(
+        '', listParam,
+        function (res) {
+            console.log(JSON.stringify(res))
+            if (res.code == 1) {
+
+                res.data.forEach((item) => {
+                    // if (item.length > 0) {
+                    str += '<li>' +
+                        '<label class="flex-csb bb-e5 p12">' +
+                        '<span class="f15 c3 fg1">' + item.title + '</span>' +
+                        '<input type="radio" name="radio" value="' + item.id + '" hidden>' +
+                        '<span class="circle flex-center flex-none bb-e5 br-circle">' +
+                        '<img src="../img/icon_10.png" alt="">' +
+                        '</span>' +
+                        '</label>' +
+                        '</li>'
+                    // }
+                    console.log(item.title)
+                })
+                $('.list').append(str)
+            }
+        }
+    );
+    console.log(listParam)
+
+
+    $("button").on("click", function () {
+        var resData = JSON.parse(getStorage("replenish"));
+        var param = {
+            HTTP_API: "vv/cupboard/api/cupboardgift/setCupboardBoxGift",
+            cupboardid: resData.cupboard_id,
+            box_id: resData.id,
+            goodsid: $("input[name='radio']:checked").val(),
+            token: getStorage("token")
+        }
+        if (getParam().type == 1) {
+            param.HTTP_API = "vv/cupboard/api/cupboardgift/setCupboardBoxGoods"
+        }
+        request("", param, function (res) {
+            if (res.code == 1) {
+                layer_msg(res.msg)
+                setTimeout(() => {
+                    history.go(-1);
+                }, 1500);
+            } else {
+                layer_msg(res.msg)
+            }
+        })
+    });
+</script>
